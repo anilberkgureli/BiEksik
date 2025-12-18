@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#4f46e5">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="apple-mobile-web-app-title" content="Bi'Eksik?">
+  <link rel="apple-touch-icon" href="/logo.png">
+  <title>Bi'Eksik?</title>
+  <link rel="icon" type="image/png" href="/logo.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#4f46e5', // Indigo 600
+            secondary: '#10b981', // Emerald 500
+            background: '#f8fafc', // Slate 50
+            surface: '#ffffff',
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.5s ease-out',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Custom scrollbar for webkit */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 3px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+
+    /* Dark mode scrollbar */
+    .dark ::-webkit-scrollbar-track {
+      background: #1e293b;
+    }
+
+    .dark ::-webkit-scrollbar-thumb {
+      background: #475569;
+    }
+
+    .dark ::-webkit-scrollbar-thumb:hover {
+      background: #64748b;
+    }
+  </style>
+  <script type="importmap">
+{
+  "imports": {
+    "@google/genai": "https://esm.sh/@google/genai@^1.33.0",
+    "lucide-react": "https://esm.sh/lucide-react@^0.561.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3"
+  }
+}
+</script>
+  <link rel="stylesheet" href="/index.css">
+</head>
+
+<body
+  class="bg-background text-slate-800 antialiased h-screen overflow-hidden dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300">
+  <div id="root" class="h-full flex flex-col"></div>
+  <script type="module" src="/index.tsx"></script>
+</body>
+
+</html>

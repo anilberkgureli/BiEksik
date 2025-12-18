@@ -1,0 +1,21 @@
+{
+    "name": "Bi'Eksik?",
+    "short_name": "Bi'Eksik?",
+    "start_url": ".",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#4f46e5",
+    "description": "Smart shopping list manager application.",
+    "icons": [
+        {
+            "src": "logo.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "logo.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}
