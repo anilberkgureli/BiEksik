@@ -1,4 +1,44 @@
+# Bi'Eksik? 🛒
+
+Akıllı alışveriş listesi uygulaması - React + Capacitor ile geliştirilmiştir.
+
+## Uygulama Yapısı
+
+Bu uygulama **Progressive Web App (PWA)** olarak geliştirilmiş ve **Capacitor** ile Android'e paketlenmiştir.
+
+### Teknoloji Stack
+
+```
+📱 Bi'Eksik Uygulaması
+├── 🌐 Web Tarafı (Ana Uygulama)
+│   ├── React + TypeScript
+│   ├── Vite (Build Tool)
+│   ├── Tailwind CSS
+│   └── localStorage (Veri Depolama)
+│
+└── 📱 Android Wrapper
+    ├── Capacitor (Web-to-Native Bridge)
+    └── MainActivity.java (Android Entry Point)
+```
+
+### Mimari Özellikleri
+
+- ✅ **Frontend Only**: Sunucu gerektirmez, tüm işlemler local
+- ✅ **Offline First**: İnternet bağlantısı olmadan çalışır
+- ✅ **localStorage**: Tüm veriler cihazda güvenle saklanır
+- ✅ **Cross-Platform**: Aynı kod tabanı web ve mobil için kullanılır
+- ❌ **Backend Yok**: Sunucu maliyeti yok, tamamen bağımsız
+
+### Java Dosyaları Hakkında
+
+`android/app/src/main/java/com/bieksik/app/MainActivity.java` dosyası:
+- Sadece Android için gerekli bir "wrapper"
+- Backend kodu değildir
+- Web uygulamasını Android'de native gibi gösterir
+- Capacitor tarafından otomatik yönetilir
+
 ## Run Locally
+
 
 **Prerequisites:**  Node.js
 
