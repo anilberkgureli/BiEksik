@@ -1,8 +1,8 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.myshoppinglist.app',
-  appName: 'My Shopping List',
+  appId: 'com.bieksik.app',
+  appName: "BiEksik?",
   webDir: 'dist',
   plugins: {
     SplashScreen: {

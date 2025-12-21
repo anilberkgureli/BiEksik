@@ -1,4 +1,4 @@
-import en from '../locales/eng.json';
+import en from '../langs/eng.json';
 
 type TranslationKeys = typeof en;
 
