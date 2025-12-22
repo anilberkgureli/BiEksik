@@ -1,31 +1,60 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { useTheme } from './hooks/useTheme';
+import { useLanguage } from './hooks/useLanguage';
 import { useShoppingLists } from './hooks/useShoppingLists';
+import { ShoppingList } from './types';
+import { ListColor } from './constants';
 import Dashboard from './components/Dashboard';
 import ShoppingListView from './components/ShoppingListView';
 import { SplashScreen } from './components/SplashScreen';
 
 const App: React.FC = () => {
   const { theme, toggleTheme } = useTheme();
-  const { lists, isLoading, createList, updateList, deleteList } = useShoppingLists();
-  const [activeListId, setActiveListId] = useState<string | null>(null);
+  const { language, setLanguage } = useLanguage();
+  const [activeListId, setActiveListId] = useState<string | null>(null); // Reverted to ID tracking
   const [showSplash, setShowSplash] = useState(true);
 
   const handleSplashFinish = useCallback(() => setShowSplash(false), []);
 
+  const {
+    lists,
+    isLoading,
+    error,
+    createList,
+    updateList,
+    deleteList,
+    deleteLists
+  } = useShoppingLists();
+
+  // DERIVE ACTIVE LIST FROM LISTS STATE
+  // This ensures that when lists are updated (e.g. item added), activeList reflects the changes immediately
+  const activeList = useMemo(() =>
+    lists.find(l => l.id === activeListId) || null,
+    [lists, activeListId]);
+
+  const handleCreateList = useCallback((title: string, color: ListColor) => {
+    createList(title, color);
+  }, [createList]);
+
   const handleBackToDashboard = useCallback(() => setActiveListId(null), []);
 
-  const handleSelectList = useCallback((listId: string) => setActiveListId(listId), []);
-
   const handleDeleteList = useCallback(async (id: string) => {
-    if (activeListId === id) setActiveListId(null);
+    if (activeListId === id) {
+      setActiveListId(null);
+    }
     await deleteList(id);
   }, [activeListId, deleteList]);
 
-  const activeList = useMemo(
-    () => lists.find(l => l.id === activeListId),
-    [lists, activeListId]
-  );
+  const handleDeleteLists = useCallback(async (ids: string[]) => {
+    if (activeListId && ids.includes(activeListId)) {
+      setActiveListId(null);
+    }
+    await deleteLists(ids);
+  }, [activeListId, deleteLists]);
+
+  const handleSelectList = useCallback((list: ShoppingList) => {
+    setActiveListId(list.id);
+  }, []);
 
   if (showSplash) {
     return <SplashScreen onFinish={handleSplashFinish} />;
@@ -40,7 +69,7 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="h-full w-full max-w-lg mx-auto bg-[url('/ui-bg.jpg')] bg-cover bg-center shadow-2xl overflow-hidden relative transition-colors duration-300 flex flex-col">
+    <div className={`h-full w-full max-w-lg mx-auto bg-cover bg-center shadow-2xl overflow-hidden relative transition-colors duration-300 flex flex-col ${theme === 'dark' ? 'bg-slate-900' : "bg-[url('/ui-bg.jpg')]"}`}>
       {/* Main Content Area */}
       <div className="flex-1 overflow-hidden relative h-full bg-transparent">
         {activeList ? (
@@ -49,15 +78,19 @@ const App: React.FC = () => {
             onBack={handleBackToDashboard}
             onUpdateList={updateList}
             onDeleteList={handleDeleteList}
+            language={language}
           />
         ) : (
           <Dashboard
             lists={lists}
-            onSelect={(list) => handleSelectList(list.id)}
-            onCreate={createList}
+            onSelect={handleSelectList}
+            onCreate={handleCreateList}
             theme={theme}
             onToggleTheme={toggleTheme}
             onDeleteList={handleDeleteList}
+            onDeleteLists={handleDeleteLists}
+            language={language}
+            onChangeLanguage={setLanguage}
           />
         )}
       </div>

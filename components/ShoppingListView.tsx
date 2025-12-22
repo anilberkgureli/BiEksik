@@ -6,24 +6,28 @@ import { FilterChip } from './ui';
 import AddItemModal from './AddItemModal';
 import { ShoppingListHeader } from './ShoppingListHeader';
 import { ShoppingItemRow } from './ShoppingItemRow';
+import { Language } from '../utils/i18n';
 import { t } from '../utils/i18n';
+import { config } from '../config';
 
 interface ShoppingListViewProps {
   list: ShoppingList;
   onBack: () => void;
   onUpdateList: (updatedList: ShoppingList) => void;
   onDeleteList: (id: string) => void;
+  language?: Language;
 }
 
 type SortOption = 'addedAt' | 'name';
 
-const ShoppingListView: React.FC<ShoppingListViewProps> = ({ list, onBack, onUpdateList, onDeleteList }) => {
+const ShoppingListView: React.FC<ShoppingListViewProps> = ({ list, onBack, onUpdateList, onDeleteList, language = 'en' }) => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isDeletingList, setIsDeletingList] = useState(false);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<SortOption>('addedAt');
-  const [isGrouped, setIsGrouped] = useState(true);
+  const [isGrouped, setIsGrouped] = useState(config.features.enableCategorization);
+  const [selectedCompletedItems, setSelectedCompletedItems] = useState<Set<string>>(new Set());
 
   const handleAddItem = useCallback(async (name: string, quantity: string, note: string) => {
     const newItem: ShoppingItem = {
@@ -83,6 +87,33 @@ const ShoppingListView: React.FC<ShoppingListViewProps> = ({ list, onBack, onUpd
     [list.items, searchQuery]
   );
 
+  const handleSelectAllCompleted = useCallback(() => {
+    const allCompletedIds = new Set(completedItems.map(i => i.id));
+    setSelectedCompletedItems(allCompletedIds);
+  }, [completedItems]);
+
+  const handleDeselectAllCompleted = useCallback(() => {
+    setSelectedCompletedItems(new Set());
+  }, []);
+
+  const handleToggleCompletedItem = useCallback((itemId: string) => {
+    setSelectedCompletedItems(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(itemId)) {
+        newSet.delete(itemId);
+      } else {
+        newSet.add(itemId);
+      }
+      return newSet;
+    });
+  }, []);
+
+  const handleDeleteSelectedCompleted = useCallback(() => {
+    const updatedItems = list.items.filter(item => !selectedCompletedItems.has(item.id));
+    onUpdateList({ ...list, items: updatedItems });
+    setSelectedCompletedItems(new Set());
+  }, [list, selectedCompletedItems, onUpdateList]);
+
   return (
     <div className="flex flex-col h-full bg-transparent">
       <ShoppingListHeader
@@ -95,12 +126,14 @@ const ShoppingListView: React.FC<ShoppingListViewProps> = ({ list, onBack, onUpd
       />
 
       <div className="px-4 flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
-        <FilterChip
-          label={isGrouped ? t('shoppingList.grouped') : t('shoppingList.listView')}
-          isActive={isGrouped}
-          onClick={() => setIsGrouped(!isGrouped)}
-          icon={isGrouped ? <LayoutGrid size={14} /> : <ListIcon size={14} />}
-        />
+        {config.features.enableCategorization && (
+          <FilterChip
+            label={isGrouped ? t('shoppingList.grouped') : t('shoppingList.listView')}
+            isActive={isGrouped}
+            onClick={() => setIsGrouped(!isGrouped)}
+            icon={isGrouped ? <LayoutGrid size={14} /> : <ListIcon size={14} />}
+          />
+        )}
 
         <FilterChip
           label="A-Z"
@@ -140,6 +173,7 @@ const ShoppingListView: React.FC<ShoppingListViewProps> = ({ list, onBack, onUpd
                     item={item}
                     onToggle={toggleItem}
                     onDelete={deleteItem}
+                    language={language}
                   />
                 ))}
               </div>
@@ -155,9 +189,44 @@ const ShoppingListView: React.FC<ShoppingListViewProps> = ({ list, onBack, onUpd
               <span className="text-xs font-medium text-slate-400 dark:text-slate-500 uppercase">{t('shoppingList.completed')} ({completedItems.length})</span>
               <span className="h-px flex-1 bg-slate-200 dark:bg-slate-700"></span>
             </div>
+
+            {/* Bulk Actions for Completed Items */}
+            <div className="flex items-center justify-between mb-2 px-2">
+              <button
+                onClick={selectedCompletedItems.size === completedItems.length ? handleDeselectAllCompleted : handleSelectAllCompleted}
+                className="text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:underline"
+              >
+                {selectedCompletedItems.size === completedItems.length
+                  ? (language === 'tr' ? 'Tümünü Kaldır' : 'Deselect All')
+                  : (language === 'tr' ? 'Tümünü Seç' : 'Select All')
+                }
+              </button>
+
+              {selectedCompletedItems.size > 0 && (
+                <button
+                  onClick={handleDeleteSelectedCompleted}
+                  className="text-xs font-medium text-red-600 dark:text-red-400 hover:underline flex items-center gap-1"
+                >
+                  <Trash2 size={12} />
+                  {language === 'tr' ? `Seçilenleri Sil (${selectedCompletedItems.size})` : `Delete Selected (${selectedCompletedItems.size})`}
+                </button>
+              )}
+            </div>
+
             <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl opacity-75">
               {completedItems.map(item => (
                 <div key={item.id} className="flex items-center p-3 border-b border-slate-100 dark:border-slate-800 last:border-none">
+                  {/* Checkbox */}
+                  <button
+                    onClick={() => handleToggleCompletedItem(item.id)}
+                    className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all mr-3 flex-shrink-0 ${selectedCompletedItems.has(item.id)
+                      ? 'bg-indigo-500 border-indigo-500 text-white'
+                      : 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700'
+                      }`}
+                  >
+                    {selectedCompletedItems.has(item.id) && <Check size={12} />}
+                  </button>
+
                   <button
                     onClick={() => toggleItem(item.id)}
                     className="w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-700 border-2 border-slate-200 dark:border-slate-700 flex items-center justify-center text-white transition-colors flex-shrink-0"

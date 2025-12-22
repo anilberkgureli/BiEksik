@@ -1,4 +1,4 @@
-# Bi'Eksik? 🛒
+# Bi Eksik? 🛒
 
 Akıllı alışveriş listesi uygulaması - React + Capacitor ile geliştirilmiştir.
 
@@ -9,7 +9,7 @@ Bu uygulama **Progressive Web App (PWA)** olarak geliştirilmiş ve **Capacitor*
 ### Teknoloji Stack
 
 ```
-📱 Bi'Eksik Uygulaması
+📱 Bi Eksik Uygulaması
 ├── 🌐 Web Tarafı (Ana Uygulama)
 │   ├── React + TypeScript
 │   ├── Vite (Build Tool)

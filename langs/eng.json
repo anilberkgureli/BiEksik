@@ -1,8 +1,8 @@
 {
     "app": {
-        "name": "Bi'Eksik?",
+        "name": "Bi Eksik?",
         "tagline": "Manage your grocery runs intelligently.",
-        "createdBy": "Created by Anil Gureli"
+        "createdBy": "Created by Anıl Güreli"
     },
     "dashboard": {
         "createNewList": "Create New List",

@@ -24,32 +24,74 @@ export const useShoppingLists = () => {
     }, []);
 
     const createList = useCallback(async (title: string, color: ListColor) => {
+        // Generate values immediately for optimistic update
+        const newList: ShoppingList = {
+            id: crypto.randomUUID(),
+            title,
+            color,
+            items: [],
+            createdAt: Date.now(),
+            updatedAt: Date.now(),
+        };
+
+        // 1. Optimistic Update (Update UI Immediately)
+        setLists(prev => [...prev, newList]);
+
+        // 2. Persist to Storage (Background)
         try {
-            const newList = await storageService.createList(title, color);
-            setLists(prev => [...prev, newList]);
-            return newList;
+            await storageService.saveList(newList);
         } catch (err) {
             console.error("Failed to create list", err);
+            setError(err instanceof Error ? err : new Error('Failed to save list'));
+            // Rollback UI if needed (complex, usually not needed for simple apps)
+            setLists(prev => prev.filter(l => l.id !== newList.id));
         }
+
+        return newList;
     }, []);
 
     const updateList = useCallback(async (updatedList: ShoppingList) => {
+        // 1. Optimistic Update
+        setLists(prev => prev.map(l => l.id === updatedList.id ? updatedList : l));
+
+        // 2. Persist to Storage
         try {
-            // Optimistic update
-            setLists(prev => prev.map(l => l.id === updatedList.id ? updatedList : l));
             await storageService.saveList(updatedList);
         } catch (err) {
             console.error("Failed to update list", err);
-            // Rollback could be implemented here
+            // Rollback would go here
         }
     }, []);
 
-    const deleteList = useCallback(async (id: string, activeListId?: string) => {
+    const deleteList = useCallback(async (id: string) => {
+        // 1. Optimistic Update
+        setLists(prev => prev.filter(l => l.id !== id));
+
+        // 2. Persist to Storage
         try {
-            setLists(prev => prev.filter(l => l.id !== id));
             await storageService.deleteList(id);
         } catch (err) {
             console.error("Failed to delete list", err);
+            // Reload from storage to rollback
+            const actualLists = await storageService.getLists();
+            setLists(actualLists);
+        }
+    }, []);
+
+    const deleteLists = useCallback(async (listIds: string[]) => {
+        const idsToDelete = new Set(listIds);
+
+        // 1. Optimistic Update
+        setLists(prev => prev.filter(l => !idsToDelete.has(l.id)));
+
+        // 2. Persist to Storage
+        try {
+            await storageService.deleteLists(listIds);
+        } catch (err) {
+            console.error("Failed to delete lists", err);
+            // Reload from storage to rollback
+            const actualLists = await storageService.getLists();
+            setLists(actualLists);
         }
     }, []);
 
@@ -60,6 +102,7 @@ export const useShoppingLists = () => {
         createList,
         updateList,
         deleteList,
-        setLists // Exposed for local updates if needed, though use actions preferably
+        deleteLists,
+        setLists
     };
 };
