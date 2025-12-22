@@ -2,6 +2,8 @@ import React from 'react';
 import { ArrowLeft, Share2, Trash2, Search, X } from 'lucide-react';
 import { t } from '../utils/i18n';
 
+import { config } from '../config';
+
 interface ShoppingListHeaderProps {
     title: string;
     onBack: () => void;
@@ -21,9 +23,11 @@ export const ShoppingListHeader: React.FC<ShoppingListHeaderProps> = ({ title, o
                 <h1 className="text-xl font-bold text-slate-800 dark:text-white truncate">{title}</h1>
             </div>
             <div className="flex gap-1">
-                <button onClick={onShare} className="p-2 text-slate-700 dark:text-slate-200 hover:bg-white/20 dark:hover:bg-slate-800/50 rounded-full transition-colors">
-                    <Share2 size={20} />
-                </button>
+                {config.features.enableShareButton && (
+                    <button onClick={onShare} className="p-2 text-slate-700 dark:text-slate-200 hover:bg-white/20 dark:hover:bg-slate-800/50 rounded-full transition-colors">
+                        <Share2 size={20} />
+                    </button>
+                )}
                 <button onClick={onDeleteList} className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-full transition-colors">
                     <Trash2 size={20} />
                 </button>

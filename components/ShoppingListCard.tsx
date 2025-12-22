@@ -1,6 +1,6 @@
 import React from 'react';
 import { ShoppingList } from '../types';
-import { ShoppingBag, Clock, ChevronRight, Trash2 } from 'lucide-react';
+import { ShoppingBag, Clock, ChevronRight, Trash2, Check } from 'lucide-react';
 import { useSwipe } from '../hooks/useSwipe';
 import { t } from '../utils/i18n';
 
@@ -9,9 +9,20 @@ interface ShoppingListCardProps {
     onSelect: (list: ShoppingList) => void;
     onDelete: (id: string) => void;
     setListToDelete: (id: string) => void;
+    isMultiSelectMode?: boolean;
+    isSelected?: boolean;
+    onToggleSelection?: () => void;
 }
 
-export const ShoppingListCard: React.FC<ShoppingListCardProps> = ({ list, onSelect, onDelete, setListToDelete }) => {
+export const ShoppingListCard: React.FC<ShoppingListCardProps> = ({
+    list,
+    onSelect,
+    onDelete,
+    setListToDelete,
+    isMultiSelectMode = false,
+    isSelected = false,
+    onToggleSelection
+}) => {
     const { swipedId, resetSwipe, handlers } = useSwipe({
         onSwipeLeft: () => { }, // State is handled locally by swipedId
         onSwipeRight: () => { }
@@ -54,6 +65,23 @@ export const ShoppingListCard: React.FC<ShoppingListCardProps> = ({ list, onSele
 
                 <div className="flex justify-between items-start mb-4">
                     <div className="flex items-center gap-3">
+                        {/* Checkbox in multi-select mode */}
+                        {isMultiSelectMode && (
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    onToggleSelection?.();
+                                }}
+                                onPointerDown={(e) => e.stopPropagation()}
+                                className={`w-6 h-6 rounded border-2 flex items-center justify-center transition-all ${isSelected
+                                        ? 'bg-indigo-500 border-indigo-500 text-white'
+                                        : 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800'
+                                    }`}
+                            >
+                                {isSelected && <Check size={16} />}
+                            </button>
+                        )}
+
                         <div className="w-10 h-10 rounded-full bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-400 dark:text-slate-500">
                             <ShoppingBag size={20} style={{ color: list.color }} />
                         </div>
@@ -66,20 +94,22 @@ export const ShoppingListCard: React.FC<ShoppingListCardProps> = ({ list, onSele
                         </div>
                     </div>
 
-                    {/* Fallback Action Buttons */}
-                    <div className="flex items-center gap-1">
-                        <button
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                setListToDelete(list.id);
-                            }}
-                            onPointerDown={(e) => e.stopPropagation()}
-                            className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-full transition-colors z-20 touch-manipulation cursor-pointer"
-                        >
-                            <Trash2 size={18} className="pointer-events-none" />
-                        </button>
-                        <ChevronRight size={20} className="text-slate-300 dark:text-slate-600 group-hover:text-slate-500 dark:group-hover:text-slate-400 transition-colors" />
-                    </div>
+                    {/* Fallback Action Buttons - Hide in multi-select mode */}
+                    {!isMultiSelectMode && (
+                        <div className="flex items-center gap-1">
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setListToDelete(list.id);
+                                }}
+                                onPointerDown={(e) => e.stopPropagation()}
+                                className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-full transition-colors z-20 touch-manipulation cursor-pointer"
+                            >
+                                <Trash2 size={18} className="pointer-events-none" />
+                            </button>
+                            <ChevronRight size={20} className="text-slate-300 dark:text-slate-600 group-hover:text-slate-500 dark:group-hover:text-slate-400 transition-colors" />
+                        </div>
+                    )}
                 </div>
 
                 {/* Progress Bar */}

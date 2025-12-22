@@ -1,0 +1,56 @@
+{
+    "app": {
+        "name": "Bi Eksik?",
+        "tagline": "Alışverişlerinizi akıllıca yönetin.",
+        "createdBy": "Created by Anıl Güreli"
+    },
+    "dashboard": {
+        "createNewList": "Yeni Liste Oluştur",
+        "newListName": "Yeni Liste Adı",
+        "newListPlaceholder": "örn. Haftalık Alışveriş",
+        "colorCode": "Renk Kodu",
+        "cancel": "İptal",
+        "createList": "Liste Oluştur",
+        "bought": "alındı",
+        "delete": "Sil"
+    },
+    "shoppingList": {
+        "findItem": "Ürün ara...",
+        "grouped": "Gruplandırılmış",
+        "listView": "Liste Görünümü",
+        "newest": "En Yeni",
+        "listIsEmpty": "Liste boş",
+        "uncategorized": "Kategorisiz",
+        "autoCategorize": "Otomatik Kategorize Et",
+        "organizing": "Düzenleniyor...",
+        "completed": "Tamamlandı",
+        "sharingLinkCopied": "Paylaşım linki kopyalandı!"
+    },
+    "addItem": {
+        "title": "Ürün Ekle",
+        "itemName": "Ürün Adı",
+        "itemNamePlaceholder": "örn. Süt",
+        "quantity": "Miktar",
+        "quantityPlaceholder": "örn. 2L",
+        "notes": "Notlar (İsteğe Bağlı)",
+        "notesPlaceholder": "Özel bir marka veya detay",
+        "cancel": "İptal",
+        "addItem": "Ürün Ekle"
+    },
+    "deleteConfirmation": {
+        "deleteList": "Liste Silinsin mi?",
+        "deleteListWithItems": "Bu listede satın alınmamış ürünler var. Silmek istediğinizden emin misiniz?",
+        "deleteListConfirm": "Bu listeyi silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.",
+        "cancel": "İptal",
+        "delete": "Sil"
+    },
+    "common": {
+        "loading": "Yükleniyor...",
+        "error": "Bir hata oluştu",
+        "save": "Kaydet",
+        "cancel": "İptal",
+        "delete": "Sil",
+        "edit": "Düzenle",
+        "close": "Kapat"
+    }
+}

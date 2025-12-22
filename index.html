@@ -9,9 +9,9 @@
   <meta name="theme-color" content="#4f46e5">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <link rel="apple-mobile-web-app-title" content="Bi'Eksik?">
+  <link rel="apple-mobile-web-app-title" content="Bi Eksik?">
   <link rel="apple-touch-icon" href="/logo.png">
-  <title>Bi'Eksik?</title>
+  <title>Bi Eksik?</title>
   <link rel="icon" type="image/png" href="/logo.png">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -68,6 +68,23 @@
 
     .dark ::-webkit-scrollbar-thumb:hover {
       background: #64748b;
+    }
+
+    /* Slide-up animation for modal */
+    @keyframes slideUp {
+      from {
+        transform: translateY(20px);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .animate-slide-up {
+      animation: slideUp 0.3s ease-out;
     }
   </style>
   <script type="importmap">

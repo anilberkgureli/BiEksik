@@ -1,14 +1,23 @@
 import React from 'react';
-import { Moon, Sun } from 'lucide-react';
 import { t } from '../utils/i18n';
-import { config } from '../config';
+import { SettingsDropdown } from './SettingsDropdown';
+import { Language } from '../utils/i18n';
 
 interface DashboardHeaderProps {
     theme: 'light' | 'dark';
     onToggleTheme: () => void;
+    language: Language;
+    onChangeLanguage: (lang: Language) => void;
+    onClearLists?: () => void;
 }
 
-export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ theme, onToggleTheme }) => (
+export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
+    theme,
+    onToggleTheme,
+    language,
+    onChangeLanguage,
+    onClearLists
+}) => (
     <header className="px-6 py-8 bg-transparent border-none flex justify-between items-start">
         <div className="flex items-center gap-4">
             <img src="/logo.png" alt="Logo" className="w-12 h-12 rounded-xl shadow-sm" />
@@ -17,14 +26,12 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ theme, onToggl
                 <p className="text-slate-500 dark:text-slate-400 mt-1 text-sm">{t('app.tagline')}</p>
             </div>
         </div>
-        {config.features.enableDarkMode && (
-            <button
-                onClick={onToggleTheme}
-                className="p-2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
-                aria-label="Toggle Theme"
-            >
-                {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
-            </button>
-        )}
+        <SettingsDropdown
+            theme={theme}
+            onToggleTheme={onToggleTheme}
+            language={language}
+            onChangeLanguage={onChangeLanguage}
+            onClearLists={onClearLists}
+        />
     </header>
 );
