@@ -66,6 +66,25 @@ export const Modal: React.FC<ModalProps> = ({
     closeOnOutsideClick = true,
     showCloseButton = true,
 }) => {
+    // Accessibility: Handle Escape key
+    React.useEffect(() => {
+        const handleEscape = (e: KeyboardEvent) => {
+            if (e.key === 'Escape' && isOpen) {
+                onClose();
+            }
+        };
+
+        if (isOpen) {
+            document.addEventListener('keydown', handleEscape);
+            // Prevent body scroll when modal is open
+            document.body.style.overflow = 'hidden';
+        }
+
+        return () => {
+            document.removeEventListener('keydown', handleEscape);
+            document.body.style.overflow = 'unset';
+        };
+    }, [isOpen, onClose]);
     if (!isOpen) return null;
 
     const handleBackdropClick = () => {
@@ -80,6 +99,9 @@ export const Modal: React.FC<ModalProps> = ({
             onClick={handleBackdropClick}
         >
             <div
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby={title ? "modal-title" : undefined}
                 className={`bg-white dark:bg-slate-900 rounded-2xl shadow-2xl ${sizeClasses[size]} w-full border border-slate-100 dark:border-slate-800`}
                 onClick={(e) => e.stopPropagation()}
             >
@@ -87,7 +109,7 @@ export const Modal: React.FC<ModalProps> = ({
                 {(title || showCloseButton) && (
                     <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
                         {title && (
-                            <h2 className="text-xl font-bold text-slate-900 dark:text-white">
+                            <h2 id="modal-title" className="text-xl font-bold text-slate-900 dark:text-white">
                                 {title}
                             </h2>
                         )}
