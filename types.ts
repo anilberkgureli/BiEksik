@@ -1,35 +1,29 @@
-import type { Category } from './constants/categories';
-import type { ListColor } from './constants/colors';
-
 /**
- * Individual shopping item interface
+ * Legacy Types File
+ * This file re-exports types from the new domain layer for backward compatibility
+ * Will be removed once all components are migrated
  */
-export interface ShoppingItem {
-  id: string;
-  name: string;
-  quantity: string; // e.g., "2 kg", "1 pack"
-  note?: string;
-  isCompleted: boolean;
-  category: Category;
-  addedAt: number;
-}
 
-/**
- * Shopping list interface
- */
-export interface ShoppingList {
-  id: string;
-  title: string;
-  items: ShoppingItem[];
-  createdAt: number;
-  updatedAt: number;
-  color: ListColor; // Hex code for visual distinction
-}
+import { ShoppingList as DomainShoppingList, PlainShoppingList } from './src/domain/entities/ShoppingList';
+import { ShoppingItem as DomainShoppingItem, PlainShoppingItem } from './src/domain/entities/ShoppingItem';
 
-/**
- * Grouped items by category
- */
-export interface CategoryGroup {
-  name: string;
-  items: ShoppingItem[];
-}
+// Re-export domain types for backward compatibility
+export type ShoppingList = PlainShoppingList;
+export type ShoppingItem = PlainShoppingItem;
+
+// Helper functions to convert between domain entities and plain objects
+export const toDomainShoppingList = (plain: PlainShoppingList): DomainShoppingList => {
+  return DomainShoppingList.fromPlainObject(plain);
+};
+
+export const toPlainShoppingList = (domain: DomainShoppingList): PlainShoppingList => {
+  return domain.toPlainObject();
+};
+
+export const toDomainShoppingItem = (plain: PlainShoppingItem): DomainShoppingItem => {
+  return DomainShoppingItem.fromPlainObject(plain);
+};
+
+export const toPlainShoppingItem = (domain: DomainShoppingItem): PlainShoppingItem => {
+  return domain.toPlainObject();
+};

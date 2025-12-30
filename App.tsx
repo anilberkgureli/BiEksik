@@ -1,9 +1,9 @@
 import React, { useState, useCallback, useMemo } from 'react';
-import { useTheme } from './hooks/useTheme';
-import { useLanguage } from './hooks/useLanguage';
+import { useTheme } from './src/application/contexts/ThemeContext';
+import { useLanguage } from './src/application/contexts/LanguageContext';
 import { useShoppingLists } from './hooks/useShoppingLists';
-import { ShoppingList } from './types';
-import { ListColor } from './constants';
+import { ShoppingList } from './src/domain/entities/ShoppingList';
+import { ListColor } from './src/shared/constants/colors';
 import Dashboard from './components/Dashboard';
 import ShoppingListView from './components/ShoppingListView';
 import { SplashScreen } from './components/SplashScreen';

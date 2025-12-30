@@ -38,6 +38,8 @@ const Dashboard: React.FC<DashboardProps> = ({
   const [isMultiSelectMode, setIsMultiSelectMode] = useState(false);
   const [selectedLists, setSelectedLists] = useState<Set<string>>(new Set());
   const [searchQuery, setSearchQuery] = useState('');
+  const [isConfirmingMultiDelete, setIsConfirmingMultiDelete] = useState(false);
+  const [isConfirmingClearCompleted, setIsConfirmingClearCompleted] = useState(false);
 
   const handleCloseModal = useCallback(() => setListToDelete(null), []);
 
@@ -115,14 +117,24 @@ const Dashboard: React.FC<DashboardProps> = ({
   }, []);
 
   const handleDeleteSelected = useCallback(() => {
+    setIsConfirmingMultiDelete(true);
+  }, []);
+
+  const handleConfirmMultiDelete = useCallback(() => {
     onDeleteLists(Array.from(selectedLists));
     setSelectedLists(new Set());
     setIsMultiSelectMode(false);
+    setIsConfirmingMultiDelete(false);
   }, [selectedLists, onDeleteLists]);
 
   const handleClearCompletedLists = useCallback(() => {
+    setIsConfirmingClearCompleted(true);
+  }, []);
+
+  const handleConfirmClearCompleted = useCallback(() => {
     const completedIds = completedLists.map(list => list.id);
     onDeleteLists(completedIds);
+    setIsConfirmingClearCompleted(false);
   }, [completedLists, onDeleteLists]);
 
   const handleListClick = useCallback((list: ShoppingList) => {
@@ -145,25 +157,26 @@ const Dashboard: React.FC<DashboardProps> = ({
 
       {/* Multi-Select Action Bar */}
       {isMultiSelectMode && (
-        <div className="px-6 pb-3 flex items-center justify-between bg-indigo-50 dark:bg-indigo-900/20 border-b border-indigo-100 dark:border-indigo-800">
-          <div className="flex items-center gap-3">
+        <div className="px-4 py-3 flex items-center justify-between bg-indigo-50 dark:bg-indigo-900/20 border-b border-indigo-100 dark:border-indigo-800">
+          <div className="flex items-center gap-2">
             <button
               onClick={handleToggleMultiSelect}
               className="p-2 rounded-full hover:bg-white dark:hover:bg-slate-800 transition-colors"
+              aria-label="Cancel selection"
             >
               <X size={20} className="text-slate-600 dark:text-slate-300" />
             </button>
-            <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
+            <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">
               {selectedLists.size} {language === 'tr' ? 'seçildi' : 'selected'}
             </span>
           </div>
           <button
             onClick={handleDeleteSelected}
             disabled={selectedLists.size === 0}
-            className="px-4 py-2 bg-red-500 text-white rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:bg-red-600 transition-colors flex items-center gap-2"
+            className="px-6 py-2.5 bg-red-500 text-white rounded-xl font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:bg-red-600 active:scale-95 transition-all flex items-center gap-2 shadow-lg shadow-red-500/30"
           >
-            <Trash2 size={18} />
-            {language === 'tr' ? 'Sil' : 'Delete'}
+            <Trash2 size={20} />
+            <span>{language === 'tr' ? 'Sil' : 'Delete'}</span>
           </button>
         </div>
       )}
@@ -259,11 +272,32 @@ const Dashboard: React.FC<DashboardProps> = ({
         </div>
       </div>
 
+      {/* Single list delete confirmation */}
       <DeleteConfirmationModal
         isOpen={!!listToDelete}
         onClose={handleCloseModal}
         onConfirm={handleConfirmDelete}
         message={deleteMessage}
+      />
+
+      {/* Multi-select delete confirmation */}
+      <DeleteConfirmationModal
+        isOpen={isConfirmingMultiDelete}
+        onClose={() => setIsConfirmingMultiDelete(false)}
+        onConfirm={handleConfirmMultiDelete}
+        message={language === 'tr'
+          ? `${selectedLists.size} listeyi silmek istediğinize emin misiniz?`
+          : `Are you sure you want to delete ${selectedLists.size} lists?`}
+      />
+
+      {/* Clear completed lists confirmation */}
+      <DeleteConfirmationModal
+        isOpen={isConfirmingClearCompleted}
+        onClose={() => setIsConfirmingClearCompleted(false)}
+        onConfirm={handleConfirmClearCompleted}
+        message={language === 'tr'
+          ? `${completedLists.length} tamamlanmış listeyi silmek istediğinize emin misiniz?`
+          : `Are you sure you want to delete ${completedLists.length} completed lists?`}
       />
     </div>
   );

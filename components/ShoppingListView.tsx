@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { ShoppingList, ShoppingItem } from '../types';
+import { ShoppingList } from '../src/domain/entities/ShoppingList';
+import { ShoppingItem } from '../src/domain/entities/ShoppingItem';
 import { DEFAULT_CATEGORY } from '../constants';
 import { Plus, Trash2 } from 'lucide-react';
 import AddItemModal from './AddItemModal';
@@ -29,28 +30,64 @@ const ShoppingListView: React.FC<ShoppingListViewProps> = ({ list, onBack, onUpd
   const [selectedCompletedItems, setSelectedCompletedItems] = useState<Set<string>>(new Set());
 
   const handleAddItem = useCallback(async (name: string, quantity: string, note: string) => {
-    const newItem: ShoppingItem = {
-      id: crypto.randomUUID(),
+    const newItem = new ShoppingItem(
+      crypto.randomUUID(),
       name,
       quantity,
       note,
-      isCompleted: false,
-      category: DEFAULT_CATEGORY,
-      addedAt: Date.now(),
-    };
-    onUpdateList({ ...list, items: [...list.items, newItem] });
+      false,
+      DEFAULT_CATEGORY,
+      Date.now()
+    );
+    // Create new ShoppingList instance instead of plain object
+    const updatedList = new ShoppingList(
+      list.id,
+      list.title,
+      [...list.items, newItem],
+      list.createdAt,
+      Date.now(),
+      list.color
+    );
+    onUpdateList(updatedList);
   }, [list, onUpdateList]);
 
   const toggleItem = useCallback((itemId: string) => {
-    const updatedItems = list.items.map(item =>
-      item.id === itemId ? { ...item, isCompleted: !item.isCompleted } : item
+    const updatedItems = list.items.map(item => {
+      if (item.id === itemId) {
+        return new ShoppingItem(
+          item.id,
+          item.name,
+          item.quantity,
+          item.note,
+          !item.isCompleted,
+          item.category,
+          item.addedAt
+        );
+      }
+      return item;
+    });
+    const updatedList = new ShoppingList(
+      list.id,
+      list.title,
+      updatedItems,
+      list.createdAt,
+      Date.now(),
+      list.color
     );
-    onUpdateList({ ...list, items: updatedItems });
+    onUpdateList(updatedList);
   }, [list, onUpdateList]);
 
   const deleteItem = useCallback((itemId: string) => {
     const updatedItems = list.items.filter(item => item.id !== itemId);
-    onUpdateList({ ...list, items: updatedItems });
+    const updatedList = new ShoppingList(
+      list.id,
+      list.title,
+      updatedItems,
+      list.createdAt,
+      Date.now(),
+      list.color
+    );
+    onUpdateList(updatedList);
   }, [list, onUpdateList]);
 
   // Logic: Filtering, Sorting, Grouping
@@ -107,7 +144,15 @@ const ShoppingListView: React.FC<ShoppingListViewProps> = ({ list, onBack, onUpd
 
   const handleDeleteSelectedCompleted = useCallback(() => {
     const updatedItems = list.items.filter(item => !selectedCompletedItems.has(item.id));
-    onUpdateList({ ...list, items: updatedItems });
+    const updatedList = new ShoppingList(
+      list.id,
+      list.title,
+      updatedItems,
+      list.createdAt,
+      Date.now(),
+      list.color
+    );
+    onUpdateList(updatedList);
     setSelectedCompletedItems(new Set());
   }, [list, selectedCompletedItems, onUpdateList]);
 
