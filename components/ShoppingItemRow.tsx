@@ -20,6 +20,7 @@ export const ShoppingItemRow: React.FC<ShoppingItemRowProps> = ({ item, onToggle
             {/* Swipe Delete Background */}
             <div className={`absolute inset-0 flex justify-end transition-opacity duration-300 ${isSwiped ? 'opacity-100' : 'opacity-0'}`}>
                 <button
+                    aria-label={`Delete ${item.name} from shopping list`}
                     className="w-20 bg-red-500 flex flex-col items-center justify-center text-white gap-1"
                     onClick={(e) => {
                         e.stopPropagation();
@@ -27,7 +28,7 @@ export const ShoppingItemRow: React.FC<ShoppingItemRowProps> = ({ item, onToggle
                         resetSwipe();
                     }}
                 >
-                    <Trash2 size={20} />
+                    <Trash2 size={20} aria-hidden="true" />
                     <span className="text-[10px] font-bold">{language === 'tr' ? 'SİL' : 'DELETE'}</span>
                 </button>
             </div>
@@ -44,9 +45,19 @@ export const ShoppingItemRow: React.FC<ShoppingItemRowProps> = ({ item, onToggle
             >
                 <button
                     onClick={(e) => { e.stopPropagation(); onToggle(item.id); }}
-                    className="w-6 h-6 rounded-full border-2 border-slate-300 dark:border-slate-600 flex items-center justify-center text-transparent hover:border-primary dark:hover:border-primary focus:outline-none transition-colors flex-shrink-0"
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            onToggle(item.id);
+                        }
+                    }}
+                    aria-label={`Mark ${item.name} as ${item.isCompleted ? 'incomplete' : 'complete'}`}
+                    aria-checked={item.isCompleted}
+                    role="checkbox"
+                    className="w-6 h-6 rounded-full border-2 border-slate-300 dark:border-slate-600 flex items-center justify-center text-transparent hover:border-primary dark:hover:border-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 transition-colors flex-shrink-0"
                 >
-                    <div className={`w-4 h-4 rounded-full bg-primary transition-transform ${item.isCompleted ? 'scale-100' : 'scale-0'}`} />
+                    <div className={`w-4 h-4 rounded-full bg-primary transition-transform ${item.isCompleted ? 'scale-100' : 'scale-0'}`} aria-hidden="true" />
                 </button>
                 <div className="flex-1 ml-3 min-w-0" onClick={() => onToggle(item.id)}>
                     <p className={`text-slate-800 dark:text-slate-200 font-medium truncate ${item.isCompleted ? 'line-through opacity-50' : ''}`}>{item.name}</p>
@@ -66,9 +77,10 @@ export const ShoppingItemRow: React.FC<ShoppingItemRowProps> = ({ item, onToggle
                             onDelete(item.id);
                         }}
                         onPointerDown={(e) => e.stopPropagation()}
-                        className="ml-2 p-2 text-slate-300 dark:text-slate-600 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-full transition-all cursor-pointer touch-manipulation"
+                        aria-label={`Delete ${item.name}`}
+                        className="ml-2 p-2 text-slate-300 dark:text-slate-600 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-full transition-all cursor-pointer touch-manipulation focus-visible:ring-2 focus-visible:ring-red-500"
                     >
-                        <Trash2 size={18} />
+                        <Trash2 size={18} aria-hidden="true" />
                     </button>
                 )}
             </div>

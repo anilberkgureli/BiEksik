@@ -156,9 +156,16 @@ const ShoppingListView: React.FC<ShoppingListViewProps> = ({ list, onBack, onUpd
       <div className="absolute bottom-6 right-6 z-20">
         <button
           onClick={() => setIsAddModalOpen(true)}
-          className="w-14 h-14 bg-primary text-white rounded-full shadow-xl shadow-indigo-500/30 flex items-center justify-center hover:scale-105 active:scale-95 transition-transform"
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              setIsAddModalOpen(true);
+            }
+          }}
+          aria-label="Add new item"
+          className="w-14 h-14 bg-primary text-white rounded-full shadow-xl shadow-indigo-500/30 flex items-center justify-center hover:scale-105 active:scale-95 transition-transform focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-indigo-500"
         >
-          <Plus size={28} />
+          <Plus size={28} aria-hidden="true" />
         </button>
       </div>
 

@@ -44,6 +44,11 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
      * @default false
      */
     isLoading?: boolean;
+
+    /**
+     * Accessible label for screen readers
+     */
+    'aria-label'?: string;
 }
 
 const variantStyles: Record<ButtonVariant, string> = {
@@ -72,20 +77,25 @@ export const Button: React.FC<ButtonProps> = ({
     className = '',
     children,
     disabled,
+    'aria-label': ariaLabel,
     ...props
 }) => {
     const baseStyles = 'font-medium rounded-xl transition-colors flex items-center justify-center gap-2';
     const widthStyles = fullWidth ? 'w-full' : '';
     const disabledStyles = disabled || isLoading ? 'cursor-not-allowed' : 'cursor-pointer';
+    // Accessibility: visible focus indicator
+    const focusStyles = 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-indigo-500';
 
     return (
         <button
-            className={`${baseStyles} ${variantStyles[variant]} ${sizeStyles[size]} ${widthStyles} ${disabledStyles} ${className}`}
+            className={`${baseStyles} ${variantStyles[variant]} ${sizeStyles[size]} ${widthStyles} ${disabledStyles} ${focusStyles} ${className}`}
             disabled={disabled || isLoading}
+            aria-disabled={disabled || isLoading}
+            aria-label={ariaLabel}
             {...props}
         >
             {isLoading && (
-                <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" aria-hidden="true" />
             )}
             {!isLoading && leftIcon}
             {children}
