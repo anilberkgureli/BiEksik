@@ -1,11 +1,10 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { ShoppingList, ShoppingItem } from '../types';
 import { DEFAULT_CATEGORY } from '../constants';
-import { Plus, SortAsc, Clock, LayoutGrid, List as ListIcon, Check, Trash2 } from 'lucide-react';
-import { FilterChip } from './ui';
+import { Plus, Trash2 } from 'lucide-react';
 import AddItemModal from './AddItemModal';
 import { ShoppingListHeader } from './ShoppingListHeader';
-import { ShoppingItemRow } from './ShoppingItemRow';
+import { FilterBar, ActiveItemsList, CompletedItemsSection } from './ShoppingList';
 import { Language } from '../utils/i18n';
 import { t } from '../utils/i18n';
 import { config } from '../config';
@@ -53,8 +52,6 @@ const ShoppingListView: React.FC<ShoppingListViewProps> = ({ list, onBack, onUpd
     const updatedItems = list.items.filter(item => item.id !== itemId);
     onUpdateList({ ...list, items: updatedItems });
   }, [list, onUpdateList]);
-
-
 
   // Logic: Filtering, Sorting, Grouping
   const groupedItems = useMemo<Record<string, ShoppingItem[]>>(() => {
@@ -125,125 +122,35 @@ const ShoppingListView: React.FC<ShoppingListViewProps> = ({ list, onBack, onUpd
         setSearchQuery={setSearchQuery}
       />
 
-      <div className="px-4 flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
-        {config.features.enableCategorization && (
-          <FilterChip
-            label={isGrouped ? t('shoppingList.grouped') : t('shoppingList.listView')}
-            isActive={isGrouped}
-            onClick={() => setIsGrouped(!isGrouped)}
-            icon={isGrouped ? <LayoutGrid size={14} /> : <ListIcon size={14} />}
-          />
-        )}
-
-        <FilterChip
-          label="A-Z"
-          isActive={sortBy === 'name'}
-          onClick={() => setSortBy('name')}
-          icon={<SortAsc size={14} />}
-        />
-
-        <FilterChip
-          label={t('shoppingList.newest')}
-          isActive={sortBy === 'addedAt'}
-          onClick={() => setSortBy('addedAt')}
-          icon={<Clock size={14} />}
-        />
-      </div>
+      <FilterBar
+        sortBy={sortBy}
+        isGrouped={isGrouped}
+        onSortChange={setSortBy}
+        onGroupToggle={() => setIsGrouped(!isGrouped)}
+        language={language}
+      />
 
       <div className="flex-1 overflow-y-auto p-4 space-y-6">
-        {list.items.length === 0 && (
-          <div className="text-center py-10 text-slate-400 dark:text-slate-500">
-            <p className="text-lg mb-2">{t('shoppingList.listIsEmpty')}</p>
-          </div>
-        )}
+        <ActiveItemsList
+          groupedItems={groupedItems}
+          isGrouped={isGrouped}
+          isEmpty={list.items.length === 0}
+          onToggleItem={toggleItem}
+          onDeleteItem={deleteItem}
+          language={language}
+        />
 
-        {(Object.entries(groupedItems) as [string, ShoppingItem[]][]).map(([category, items]) => (
-          items.length > 0 && (
-            <div key={category} className="space-y-2">
-              {isGrouped && (
-                <div className="flex items-center justify-between px-1">
-                  <h3 className="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">{category}</h3>
-
-                </div>
-              )}
-              <div className="bg-white/60 dark:bg-slate-900/60 backdrop-blur-sm rounded-xl shadow-sm border border-white/20 dark:border-slate-700/50 overflow-hidden">
-                {items.map(item => (
-                  <ShoppingItemRow
-                    key={item.id}
-                    item={item}
-                    onToggle={toggleItem}
-                    onDelete={deleteItem}
-                    language={language}
-                  />
-                ))}
-              </div>
-            </div>
-          )
-        ))}
-
-        {/* Completed Items */}
-        {completedItems.length > 0 && (
-          <div className="pt-2">
-            <div className="flex items-center gap-2 mb-3">
-              <span className="h-px flex-1 bg-slate-200 dark:bg-slate-700"></span>
-              <span className="text-xs font-medium text-slate-400 dark:text-slate-500 uppercase">{t('shoppingList.completed')} ({completedItems.length})</span>
-              <span className="h-px flex-1 bg-slate-200 dark:bg-slate-700"></span>
-            </div>
-
-            {/* Bulk Actions for Completed Items */}
-            <div className="flex items-center justify-between mb-2 px-2">
-              <button
-                onClick={selectedCompletedItems.size === completedItems.length ? handleDeselectAllCompleted : handleSelectAllCompleted}
-                className="text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:underline"
-              >
-                {selectedCompletedItems.size === completedItems.length
-                  ? (language === 'tr' ? 'Tümünü Kaldır' : 'Deselect All')
-                  : (language === 'tr' ? 'Tümünü Seç' : 'Select All')
-                }
-              </button>
-
-              {selectedCompletedItems.size > 0 && (
-                <button
-                  onClick={handleDeleteSelectedCompleted}
-                  className="text-xs font-medium text-red-600 dark:text-red-400 hover:underline flex items-center gap-1"
-                >
-                  <Trash2 size={12} />
-                  {language === 'tr' ? `Seçilenleri Sil (${selectedCompletedItems.size})` : `Delete Selected (${selectedCompletedItems.size})`}
-                </button>
-              )}
-            </div>
-
-            <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl opacity-75">
-              {completedItems.map(item => (
-                <div key={item.id} className="flex items-center p-3 border-b border-slate-100 dark:border-slate-800 last:border-none">
-                  {/* Checkbox */}
-                  <button
-                    onClick={() => handleToggleCompletedItem(item.id)}
-                    className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all mr-3 flex-shrink-0 ${selectedCompletedItems.has(item.id)
-                      ? 'bg-indigo-500 border-indigo-500 text-white'
-                      : 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700'
-                      }`}
-                  >
-                    {selectedCompletedItems.has(item.id) && <Check size={12} />}
-                  </button>
-
-                  <button
-                    onClick={() => toggleItem(item.id)}
-                    className="w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-700 border-2 border-slate-200 dark:border-slate-700 flex items-center justify-center text-white transition-colors flex-shrink-0"
-                  >
-                    <Check size={14} />
-                  </button>
-                  <div className="flex-1 ml-3 text-slate-400 dark:text-slate-600 line-through min-w-0">
-                    <p className="font-medium truncate">{item.name}</p>
-                  </div>
-                  <button onClick={() => deleteItem(item.id)} className="text-slate-300 dark:text-slate-700 hover:text-red-500 dark:hover:text-red-400 p-2">
-                    <Trash2 size={16} />
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+        <CompletedItemsSection
+          completedItems={completedItems}
+          selectedItems={selectedCompletedItems}
+          onToggleItem={toggleItem}
+          onDeleteItem={deleteItem}
+          onSelectAll={handleSelectAllCompleted}
+          onDeselectAll={handleDeselectAllCompleted}
+          onToggleSelection={handleToggleCompletedItem}
+          onDeleteSelected={handleDeleteSelectedCompleted}
+          language={language}
+        />
       </div>
 
       <div className="absolute bottom-6 right-6 z-20">
