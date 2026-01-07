@@ -115,6 +115,21 @@ export class LocalStorageRepository implements IStorageRepository {
     }
 
     /**
+     * Find a shopping list by ID
+     */
+    async findById(listId: string): Promise<ShoppingList | null> {
+        const lists = await this.getLists();
+        return lists.find(l => l.id === listId) || null;
+    }
+
+    /**
+     * Update an existing shopping list
+     */
+    async update(list: ShoppingList): Promise<void> {
+        await this.saveList(list);
+    }
+
+    /**
      * Clear the in-memory cache
      * Useful for testing or forcing a refresh
      */

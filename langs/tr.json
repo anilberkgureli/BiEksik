@@ -44,6 +44,17 @@
         "cancel": "İptal",
         "delete": "Sil"
     },
+    "reminder": {
+        "add": "Hatırlatıcı Ekle",
+        "edit": "Hatırlatıcıyı Düzenle",
+        "time": "Hatırlatma Saati",
+        "enabled": "Aktif",
+        "disabled": "Pasif",
+        "willNotify": "Bildirim gönderilecek",
+        "wontNotify": "Bildirim gönderilmeyecek",
+        "setReminder": "Hatırlatıcı Ayarla",
+        "at": "saat"
+    },
     "common": {
         "loading": "Yükleniyor...",
         "error": "Bir hata oluştu",

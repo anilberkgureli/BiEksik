@@ -23,7 +23,9 @@ const App: React.FC = () => {
     createList,
     updateList,
     deleteList,
-    deleteLists
+    deleteLists,
+    setReminder,
+    clearReminder
   } = useShoppingLists();
 
   // DERIVE ACTIVE LIST FROM LISTS STATE
@@ -91,6 +93,8 @@ const App: React.FC = () => {
             onDeleteLists={handleDeleteLists}
             language={language}
             onChangeLanguage={setLanguage}
+            onSetReminder={setReminder}
+            onClearReminder={clearReminder}
           />
         )}
       </div>

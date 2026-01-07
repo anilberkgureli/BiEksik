@@ -2,6 +2,7 @@ import React from 'react';
 import { ShoppingList } from '../../src/domain/entities/ShoppingList';
 import { ShoppingListCard } from '../ShoppingListCard';
 import { Language } from '../../utils/i18n';
+import type { ReminderTime } from '../../src/domain/entities/ReminderTime';
 
 interface ActiveListsSectionProps {
     lists: ShoppingList[];
@@ -12,6 +13,8 @@ interface ActiveListsSectionProps {
     selectedLists: Set<string>;
     onToggleSelection: (id: string) => void;
     language: Language;
+    onSetReminder?: (listId: string, reminderTime: ReminderTime) => void;
+    onClearReminder?: (listId: string) => void;
 }
 
 /**
@@ -26,7 +29,9 @@ export const ActiveListsSection: React.FC<ActiveListsSectionProps> = ({
     isMultiSelectMode,
     selectedLists,
     onToggleSelection,
-    language
+    language,
+    onSetReminder,
+    onClearReminder
 }) => {
     return (
         <div className="space-y-4">
@@ -40,6 +45,8 @@ export const ActiveListsSection: React.FC<ActiveListsSectionProps> = ({
                     isMultiSelectMode={isMultiSelectMode}
                     isSelected={selectedLists.has(list.id)}
                     onToggleSelection={() => onToggleSelection(list.id)}
+                    onSetReminder={onSetReminder}
+                    onClearReminder={onClearReminder}
                 />
             ))}
         </div>

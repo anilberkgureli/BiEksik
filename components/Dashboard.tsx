@@ -8,6 +8,7 @@ import { DeleteConfirmationModal } from './DeleteConfirmationModal';
 import { Language } from '../utils/i18n';
 import { Trash2, X } from 'lucide-react';
 import { t } from '../utils/i18n';
+import type { ReminderTime } from '../src/domain/entities/ReminderTime';
 
 interface DashboardProps {
   lists: ShoppingList[];
@@ -20,6 +21,8 @@ interface DashboardProps {
   language: Language;
   onChangeLanguage: (lang: Language) => void;
   onClearLists?: () => void;
+  onSetReminder?: (listId: string, reminderTime: ReminderTime) => void;
+  onClearReminder?: (listId: string) => void;
 }
 
 const Dashboard: React.FC<DashboardProps> = ({
@@ -32,7 +35,9 @@ const Dashboard: React.FC<DashboardProps> = ({
   onDeleteLists,
   language,
   onChangeLanguage,
-  onClearLists
+  onClearLists,
+  onSetReminder,
+  onClearReminder
 }) => {
   const [listToDelete, setListToDelete] = useState<string | null>(null);
   const [isMultiSelectMode, setIsMultiSelectMode] = useState(false);
@@ -221,6 +226,8 @@ const Dashboard: React.FC<DashboardProps> = ({
                 isMultiSelectMode={isMultiSelectMode}
                 isSelected={selectedLists.has(list.id)}
                 onToggleSelection={() => handleToggleSelection(list.id)}
+                onSetReminder={onSetReminder}
+                onClearReminder={onClearReminder}
               />
             ))
           ) : (

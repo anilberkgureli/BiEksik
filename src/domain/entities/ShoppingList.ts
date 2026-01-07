@@ -1,5 +1,6 @@
 import { ShoppingItem } from './ShoppingItem';
 import type { ListColor } from '../../shared/constants/colors';
+import { ReminderTime, type PlainReminderTime } from './ReminderTime';
 
 /**
  * ShoppingList Entity
@@ -12,7 +13,8 @@ export class ShoppingList {
         public items: ShoppingItem[],
         public readonly createdAt: number,
         public updatedAt: number,
-        public color: ListColor
+        public color: ListColor,
+        public reminder?: ReminderTime
     ) { }
 
     /**
@@ -72,6 +74,22 @@ export class ShoppingList {
     }
 
     /**
+     * Set a reminder for this list
+     */
+    setReminder(reminder: ReminderTime): void {
+        this.reminder = reminder;
+        this.updatedAt = Date.now();
+    }
+
+    /**
+     * Clear the reminder for this list
+     */
+    clearReminder(): void {
+        this.reminder = undefined;
+        this.updatedAt = Date.now();
+    }
+
+    /**
      * Convert entity to plain object (for storage)
      */
     toPlainObject(): PlainShoppingList {
@@ -82,6 +100,7 @@ export class ShoppingList {
             createdAt: this.createdAt,
             updatedAt: this.updatedAt,
             color: this.color,
+            reminder: this.reminder?.toPlainObject(),
         };
     }
 
@@ -95,7 +114,8 @@ export class ShoppingList {
             plain.items.map(item => ShoppingItem.fromPlainObject(item)),
             plain.createdAt,
             plain.updatedAt,
-            plain.color
+            plain.color,
+            plain.reminder ? ReminderTime.fromPlainObject(plain.reminder) : undefined
         );
     }
 }
@@ -118,4 +138,5 @@ export interface PlainShoppingList {
     createdAt: number;
     updatedAt: number;
     color: ListColor;
+    reminder?: PlainReminderTime;
 }
