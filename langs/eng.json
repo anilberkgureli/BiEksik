@@ -44,6 +44,17 @@
         "cancel": "Cancel",
         "delete": "Delete"
     },
+    "reminder": {
+        "add": "Add Reminder",
+        "edit": "Edit Reminder",
+        "time": "Reminder Time",
+        "enabled": "Enabled",
+        "disabled": "Disabled",
+        "willNotify": "Will send notification",
+        "wontNotify": "Won't send notification",
+        "setReminder": "Set Reminder",
+        "at": "at"
+    },
     "common": {
         "loading": "Loading...",
         "error": "An error occurred",

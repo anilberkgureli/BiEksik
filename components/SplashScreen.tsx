@@ -17,7 +17,9 @@ export const SplashScreen: React.FC<{ onFinish: () => void }> = ({ onFinish }) =
     return (
         <div className={`h-full w-full fixed inset-0 z-50 flex items-center justify-center bg-[url('/ui-bg.jpg')] bg-cover bg-center transition-opacity duration-500 ${visible ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
             <div className="animate-fade-in text-center p-8 rounded-2xl bg-white/30 backdrop-blur-md border border-white/20 shadow-xl flex flex-col items-center gap-4">
-                <img src="/logo.png" alt="App Logo" className="w-24 h-24 rounded-2xl shadow-lg animate-bounce" />
+                <div className="w-24 h-24 rounded-2xl shadow-lg overflow-hidden flex items-center justify-center bg-white animate-bounce">
+                    <img src="/logo.png" alt="App Logo" className="w-full h-full object-cover scale-110" />
+                </div>
                 <h1 className="text-xl font-serif tracking-[0.3em] text-slate-800 uppercase select-none font-bold animate-pulse">
                     {t('app.createdBy')}
                 </h1>

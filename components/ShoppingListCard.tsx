@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ShoppingList } from '../types';
-import { ShoppingBag, Clock, ChevronRight, Trash2, Check } from 'lucide-react';
+import { ShoppingBag, Clock, ChevronRight, Trash2, Check, Bell } from 'lucide-react';
 import { useSwipe } from '../hooks/useSwipe';
 import { t } from '../utils/i18n';
+import { ReminderModal } from './ReminderModal';
+import type { ReminderTime } from '../src/domain/entities/ReminderTime';
 
 interface ShoppingListCardProps {
     list: ShoppingList;
@@ -12,6 +14,8 @@ interface ShoppingListCardProps {
     isMultiSelectMode?: boolean;
     isSelected?: boolean;
     onToggleSelection?: () => void;
+    onSetReminder?: (listId: string, reminderTime: ReminderTime) => void;
+    onClearReminder?: (listId: string) => void;
 }
 
 export const ShoppingListCard: React.FC<ShoppingListCardProps> = ({
@@ -21,8 +25,11 @@ export const ShoppingListCard: React.FC<ShoppingListCardProps> = ({
     setListToDelete,
     isMultiSelectMode = false,
     isSelected = false,
-    onToggleSelection
+    onToggleSelection,
+    onSetReminder,
+    onClearReminder
 }) => {
+    const [isReminderModalOpen, setIsReminderModalOpen] = useState(false);
     const { swipedId, resetSwipe, handlers } = useSwipe({
         onSwipeLeft: () => { }, // State is handled locally by swipedId
         onSwipeRight: () => { }
@@ -74,8 +81,8 @@ export const ShoppingListCard: React.FC<ShoppingListCardProps> = ({
                                 }}
                                 onPointerDown={(e) => e.stopPropagation()}
                                 className={`w-6 h-6 rounded border-2 flex items-center justify-center transition-all ${isSelected
-                                        ? 'bg-indigo-500 border-indigo-500 text-white'
-                                        : 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800'
+                                    ? 'bg-indigo-500 border-indigo-500 text-white'
+                                    : 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800'
                                     }`}
                             >
                                 {isSelected && <Check size={16} />}
@@ -97,6 +104,23 @@ export const ShoppingListCard: React.FC<ShoppingListCardProps> = ({
                     {/* Fallback Action Buttons - Hide in multi-select mode */}
                     {!isMultiSelectMode && (
                         <div className="flex items-center gap-1">
+                            {/* Reminder Button */}
+                            {onSetReminder && (
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setIsReminderModalOpen(true);
+                                    }}
+                                    onPointerDown={(e) => e.stopPropagation()}
+                                    className={`p-2 rounded-full transition-colors z-20 touch-manipulation cursor-pointer ${list.reminder?.enabled
+                                            ? 'text-indigo-500 bg-indigo-50 dark:bg-indigo-900/20'
+                                            : 'text-slate-300 hover:text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/20'
+                                        }`}
+                                    title={list.reminder ? `${t('reminder.at')} ${list.reminder.getFormattedTime()}` : t('reminder.setReminder')}
+                                >
+                                    <Bell size={18} className="pointer-events-none" />
+                                </button>
+                            )}
                             <button
                                 onClick={(e) => {
                                     e.stopPropagation();
@@ -123,6 +147,18 @@ export const ShoppingListCard: React.FC<ShoppingListCardProps> = ({
                     </div>
                 </div>
             </div>
+
+            {/* Reminder Modal */}
+            {onSetReminder && onClearReminder && (
+                <ReminderModal
+                    isOpen={isReminderModalOpen}
+                    onClose={() => setIsReminderModalOpen(false)}
+                    onSave={(reminderTime) => onSetReminder(list.id, reminderTime)}
+                    onDelete={list.reminder ? () => onClearReminder(list.id) : undefined}
+                    currentReminder={list.reminder}
+                    listTitle={list.title}
+                />
+            )}
         </div>
     );
 };

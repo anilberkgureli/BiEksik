@@ -1,9 +1,9 @@
 import React, { useState, useCallback, useMemo } from 'react';
-import { useTheme } from './hooks/useTheme';
-import { useLanguage } from './hooks/useLanguage';
+import { useTheme } from './src/application/contexts/ThemeContext';
+import { useLanguage } from './src/application/contexts/LanguageContext';
 import { useShoppingLists } from './hooks/useShoppingLists';
-import { ShoppingList } from './types';
-import { ListColor } from './constants';
+import { ShoppingList } from './src/domain/entities/ShoppingList';
+import { ListColor } from './src/shared/constants/colors';
 import Dashboard from './components/Dashboard';
 import ShoppingListView from './components/ShoppingListView';
 import { SplashScreen } from './components/SplashScreen';
@@ -23,7 +23,9 @@ const App: React.FC = () => {
     createList,
     updateList,
     deleteList,
-    deleteLists
+    deleteLists,
+    setReminder,
+    clearReminder
   } = useShoppingLists();
 
   // DERIVE ACTIVE LIST FROM LISTS STATE
@@ -91,6 +93,8 @@ const App: React.FC = () => {
             onDeleteLists={handleDeleteLists}
             language={language}
             onChangeLanguage={setLanguage}
+            onSetReminder={setReminder}
+            onClearReminder={clearReminder}
           />
         )}
       </div>
