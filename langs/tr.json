@@ -2,7 +2,7 @@
     "app": {
         "name": "Bi Eksik?",
         "tagline": "Alışverişlerinizi akıllıca yönetin.",
-        "createdBy": "Created by Anıl Güreli"
+        "createdBy": "Developed by Anıl Güreli"
     },
     "dashboard": {
         "createNewList": "Yeni Liste Oluştur",
@@ -48,6 +48,9 @@
         "add": "Hatırlatıcı Ekle",
         "edit": "Hatırlatıcıyı Düzenle",
         "time": "Hatırlatma Saati",
+        "date": "Tarih",
+        "dateTime": "Tarih ve Saat",
+        "selectFutureTime": "Gelecekte bir tarih ve saat seçin",
         "enabled": "Aktif",
         "disabled": "Pasif",
         "willNotify": "Bildirim gönderilecek",

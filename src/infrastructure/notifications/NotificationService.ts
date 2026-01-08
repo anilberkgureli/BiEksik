@@ -54,8 +54,8 @@ export class NotificationService {
             // Cancel existing notification for this list
             await this.cancelReminder(listId);
 
-            // Get next occurrence time
-            const scheduledDate = reminderTime.getNextOccurrence();
+            // Get scheduled date from reminderTime
+            const scheduledDate = reminderTime.getScheduledDate();
 
             // Schedule the notification
             await LocalNotifications.schedule({
@@ -70,6 +70,7 @@ export class NotificationService {
                             at: scheduledDate,
                             allowWhileIdle: true
                         },
+                        sound: 'default', // Enable notification sound
                         extra: {
                             listId: listId
                         }

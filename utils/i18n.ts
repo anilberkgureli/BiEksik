@@ -34,13 +34,14 @@ export const setLanguage = (lang: Language) => {
 };
 
 export const getCurrentLanguage = (): Language => {
-    const saved = localStorage.getItem('language') as Language;
-    return saved || detectBrowserLanguage(); // Use browser language if no saved preference
+    return currentLanguage;
 };
 
-export const t = (key: string): string => {
+// Translation function that uses the current language
+export const t = (key: string, lang?: Language): string => {
     const keys = key.split('.');
-    let value: any = translations[currentLanguage];
+    const languageToUse = lang || currentLanguage;
+    let value: any = translations[languageToUse];
 
     for (const k of keys) {
         value = value?.[k];
@@ -50,7 +51,9 @@ export const t = (key: string): string => {
 };
 
 // Initialize language from localStorage or browser
-const savedLang = getCurrentLanguage();
-if (savedLang) {
+const savedLang = localStorage.getItem('language') as Language;
+if (savedLang === 'en' || savedLang === 'tr') {
     currentLanguage = savedLang;
+} else {
+    currentLanguage = detectBrowserLanguage();
 }
