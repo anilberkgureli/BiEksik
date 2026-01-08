@@ -1,18 +1,16 @@
 /**
  * ReminderTime Value Object
- * Represents a scheduled time for reminder notifications
+ * Represents a scheduled date and time for reminder notifications
  */
 
 export interface PlainReminderTime {
-    hour: number;
-    minute: number;
+    scheduledDate: number; // timestamp
     enabled: boolean;
 }
 
 export class ReminderTime {
     constructor(
-        public readonly hour: number,
-        public readonly minute: number,
+        public readonly scheduledDate: Date,
         public readonly enabled: boolean = true
     ) {
         this.validate();
@@ -22,54 +20,52 @@ export class ReminderTime {
      * Validate reminder time values
      */
     private validate(): void {
-        if (this.hour < 0 || this.hour > 23) {
-            throw new Error('Hour must be between 0 and 23');
-        }
-        if (this.minute < 0 || this.minute > 59) {
-            throw new Error('Minute must be between 0 and 59');
+        if (!(this.scheduledDate instanceof Date) || isNaN(this.scheduledDate.getTime())) {
+            throw new Error('Invalid date');
         }
     }
 
     /**
-     * Get formatted time string (HH:MM)
+     * Get formatted date and time string
+     */
+    getFormattedDateTime(): string {
+        const year = this.scheduledDate.getFullYear();
+        const month = (this.scheduledDate.getMonth() + 1).toString().padStart(2, '0');
+        const day = this.scheduledDate.getDate().toString().padStart(2, '0');
+        const hours = this.scheduledDate.getHours().toString().padStart(2, '0');
+        const minutes = this.scheduledDate.getMinutes().toString().padStart(2, '0');
+
+        return `${year}-${month}-${day} ${hours}:${minutes}`;
+    }
+
+    /**
+     * Get formatted time string (HH:MM) for backward compatibility
      */
     getFormattedTime(): string {
-        const h = this.hour.toString().padStart(2, '0');
-        const m = this.minute.toString().padStart(2, '0');
+        const h = this.scheduledDate.getHours().toString().padStart(2, '0');
+        const m = this.scheduledDate.getMinutes().toString().padStart(2, '0');
         return `${h}:${m}`;
     }
 
     /**
-     * Get next occurrence of this time as Date
+     * Get the scheduled date (already set, no need to calculate next occurrence)
      */
-    getNextOccurrence(): Date {
-        const now = new Date();
-        const scheduled = new Date();
-        scheduled.setHours(this.hour, this.minute, 0, 0);
-
-        // If time has passed today, schedule for tomorrow
-        if (scheduled <= now) {
-            scheduled.setDate(scheduled.getDate() + 1);
-        }
-
-        return scheduled;
+    getScheduledDate(): Date {
+        return this.scheduledDate;
     }
 
     /**
-     * Check if this time is in the past today
+     * Check if this reminder is in the past
      */
-    isPastToday(): boolean {
-        const now = new Date();
-        const scheduled = new Date();
-        scheduled.setHours(this.hour, this.minute, 0, 0);
-        return scheduled <= now;
+    isPast(): boolean {
+        return this.scheduledDate <= new Date();
     }
 
     /**
      * Create a new ReminderTime with enabled toggled
      */
     toggleEnabled(): ReminderTime {
-        return new ReminderTime(this.hour, this.minute, !this.enabled);
+        return new ReminderTime(this.scheduledDate, !this.enabled);
     }
 
     /**
@@ -77,8 +73,7 @@ export class ReminderTime {
      */
     toPlainObject(): PlainReminderTime {
         return {
-            hour: this.hour,
-            minute: this.minute,
+            scheduledDate: this.scheduledDate.getTime(),
             enabled: this.enabled
         };
     }
@@ -87,16 +82,13 @@ export class ReminderTime {
      * Deserialize from plain object
      */
     static fromPlainObject(plain: PlainReminderTime): ReminderTime {
-        return new ReminderTime(plain.hour, plain.minute, plain.enabled);
+        return new ReminderTime(new Date(plain.scheduledDate), plain.enabled);
     }
 
     /**
-     * Create from time string (HH:MM)
+     * Create from ISO date string
      */
-    static fromTimeString(time: string, enabled: boolean = true): ReminderTime {
-        const [hourStr, minuteStr] = time.split(':');
-        const hour = parseInt(hourStr, 10);
-        const minute = parseInt(minuteStr, 10);
-        return new ReminderTime(hour, minute, enabled);
+    static fromISOString(isoString: string, enabled: boolean = true): ReminderTime {
+        return new ReminderTime(new Date(isoString), enabled);
     }
 }

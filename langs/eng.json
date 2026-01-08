@@ -2,7 +2,7 @@
     "app": {
         "name": "Bi Eksik?",
         "tagline": "Manage your grocery runs intelligently.",
-        "createdBy": "Created by Anıl Güreli"
+        "createdBy": "Developed by Anıl Güreli"
     },
     "dashboard": {
         "createNewList": "Create New List",
@@ -48,6 +48,9 @@
         "add": "Add Reminder",
         "edit": "Edit Reminder",
         "time": "Reminder Time",
+        "date": "Date",
+        "dateTime": "Date and Time",
+        "selectFutureTime": "Select a future date and time",
         "enabled": "Enabled",
         "disabled": "Disabled",
         "willNotify": "Will send notification",

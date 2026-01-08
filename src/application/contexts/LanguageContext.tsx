@@ -45,6 +45,10 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
                 const { value } = await Preferences.get({ key: STORAGE_KEYS.LANGUAGE });
                 if (value === 'en' || value === 'tr') {
                     setLanguageState(value);
+
+                    // Sync with i18n.ts
+                    const { setLanguage: setI18nLanguage } = await import('../../../utils/i18n');
+                    setI18nLanguage(value);
                 }
             } catch (error) {
                 console.error('Error loading language:', error);
@@ -60,11 +64,18 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
     const setLanguage = useCallback(async (newLanguage: Language) => {
         setLanguageState(newLanguage);
 
+        // Sync with i18n.ts
+        const { setLanguage: setI18nLanguage } = await import('../../../utils/i18n');
+        setI18nLanguage(newLanguage);
+
         try {
             await Preferences.set({
                 key: STORAGE_KEYS.LANGUAGE,
                 value: newLanguage
             });
+
+            // Reload page to apply language changes everywhere
+            window.location.reload();
         } catch (error) {
             console.error('Error saving language:', error);
         }

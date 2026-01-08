@@ -20,26 +20,48 @@ export const ReminderModal: React.FC<ReminderModalProps> = ({
     currentReminder,
     listTitle
 }) => {
-    const [hour, setHour] = useState(currentReminder?.hour ?? 9);
-    const [minute, setMinute] = useState(currentReminder?.minute ?? 0);
+    // Format date for datetime-local input (YYYY-MM-DDTHH:MM)
+    const formatDateTimeLocal = (date: Date): string => {
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const day = date.getDate().toString().padStart(2, '0');
+        const hours = date.getHours().toString().padStart(2, '0');
+        const minutes = date.getMinutes().toString().padStart(2, '0');
+        return `${year}-${month}-${day}T${hours}:${minutes}`;
+    };
+
+    // Default to 1 hour from now
+    const getDefaultDateTime = (): string => {
+        const date = new Date();
+        date.setHours(date.getHours() + 1);
+        date.setMinutes(0);
+        date.setSeconds(0);
+        date.setMilliseconds(0);
+        return formatDateTimeLocal(date);
+    };
+
+    const [dateTime, setDateTime] = useState(
+        currentReminder
+            ? formatDateTimeLocal(currentReminder.scheduledDate)
+            : getDefaultDateTime()
+    );
     const [enabled, setEnabled] = useState(currentReminder?.enabled ?? true);
 
     // Update state when currentReminder changes
     useEffect(() => {
         if (currentReminder) {
-            setHour(currentReminder.hour);
-            setMinute(currentReminder.minute);
+            setDateTime(formatDateTimeLocal(currentReminder.scheduledDate));
             setEnabled(currentReminder.enabled);
         } else {
-            setHour(9);
-            setMinute(0);
+            setDateTime(getDefaultDateTime());
             setEnabled(true);
         }
     }, [currentReminder]);
 
     const handleSave = () => {
         try {
-            const reminderTime = new ReminderTime(hour, minute, enabled);
+            const scheduledDate = new Date(dateTime);
+            const reminderTime = new ReminderTime(scheduledDate, enabled);
             onSave(reminderTime);
             onClose();
         } catch (error) {
@@ -55,6 +77,9 @@ export const ReminderModal: React.FC<ReminderModalProps> = ({
     };
 
     if (!isOpen) return null;
+
+    // Get minimum datetime (now)
+    const minDateTime = formatDateTimeLocal(new Date());
 
     return (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
@@ -80,36 +105,72 @@ export const ReminderModal: React.FC<ReminderModalProps> = ({
                     </button>
                 </div>
 
-                {/* Time Picker */}
-                <div className="mb-6">
+                {/* Date Time Picker */}
+                <div className="mb-6 space-y-4">
                     <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-3">
-                        {t('reminder.time')}
+                        {t('reminder.dateTime')}
                     </label>
-                    <div className="flex items-center gap-3">
-                        <select
-                            value={hour}
-                            onChange={(e) => setHour(parseInt(e.target.value))}
-                            className="flex-1 px-4 py-3 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl text-slate-900 dark:text-white font-medium text-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                        >
-                            {Array.from({ length: 24 }, (_, i) => (
-                                <option key={i} value={i}>
-                                    {i.toString().padStart(2, '0')}
-                                </option>
-                            ))}
-                        </select>
-                        <span className="text-2xl font-bold text-slate-400">:</span>
-                        <select
-                            value={minute}
-                            onChange={(e) => setMinute(parseInt(e.target.value))}
-                            className="flex-1 px-4 py-3 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl text-slate-900 dark:text-white font-medium text-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                        >
-                            {Array.from({ length: 60 }, (_, i) => (
-                                <option key={i} value={i}>
-                                    {i.toString().padStart(2, '0')}
-                                </option>
-                            ))}
-                        </select>
+
+                    {/* Date Picker */}
+                    <div>
+                        <label className="block text-xs text-slate-500 dark:text-slate-400 mb-2">
+                            {t('reminder.date')}
+                        </label>
+                        <input
+                            type="date"
+                            value={dateTime.split('T')[0]}
+                            min={minDateTime.split('T')[0]}
+                            onChange={(e) => {
+                                const time = dateTime.split('T')[1] || '09:00';
+                                setDateTime(`${e.target.value}T${time}`);
+                            }}
+                            className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl text-slate-900 dark:text-white font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        />
                     </div>
+
+                    {/* Time Picker - 24 hour format */}
+                    <div>
+                        <label className="block text-xs text-slate-500 dark:text-slate-400 mb-2">
+                            {t('reminder.time')}
+                        </label>
+                        <div className="flex items-center gap-3">
+                            <select
+                                value={dateTime.split('T')[1]?.split(':')[0] || '09'}
+                                onChange={(e) => {
+                                    const date = dateTime.split('T')[0];
+                                    const minute = dateTime.split('T')[1]?.split(':')[1] || '00';
+                                    setDateTime(`${date}T${e.target.value}:${minute}`);
+                                }}
+                                className="flex-1 px-4 py-3 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl text-slate-900 dark:text-white font-medium text-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            >
+                                {Array.from({ length: 24 }, (_, i) => (
+                                    <option key={i} value={i.toString().padStart(2, '0')}>
+                                        {i.toString().padStart(2, '0')}
+                                    </option>
+                                ))}
+                            </select>
+                            <span className="text-2xl font-bold text-slate-400">:</span>
+                            <select
+                                value={dateTime.split('T')[1]?.split(':')[1] || '00'}
+                                onChange={(e) => {
+                                    const date = dateTime.split('T')[0];
+                                    const hour = dateTime.split('T')[1]?.split(':')[0] || '09';
+                                    setDateTime(`${date}T${hour}:${e.target.value}`);
+                                }}
+                                className="flex-1 px-4 py-3 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl text-slate-900 dark:text-white font-medium text-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            >
+                                {Array.from({ length: 60 }, (_, i) => (
+                                    <option key={i} value={i.toString().padStart(2, '0')}>
+                                        {i.toString().padStart(2, '0')}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
+
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
+                        {t('reminder.selectFutureTime')}
+                    </p>
                 </div>
 
                 {/* Enable/Disable Toggle */}

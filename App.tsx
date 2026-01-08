@@ -7,6 +7,7 @@ import { ListColor } from './src/shared/constants/colors';
 import Dashboard from './components/Dashboard';
 import ShoppingListView from './components/ShoppingListView';
 import { SplashScreen } from './components/SplashScreen';
+import { t } from './utils/i18n';
 
 const App: React.FC = () => {
   const { theme, toggleTheme } = useTheme();
@@ -102,7 +103,7 @@ const App: React.FC = () => {
       {/* Majestic Footer */}
       <div className="py-4 bg-white/50 backdrop-blur-md border-t border-white/20 text-center shrink-0">
         <p className="text-[11px] font-serif tracking-[0.25em] text-slate-800 uppercase select-none font-bold">
-          Created by Anil Gureli
+          {t('app.createdBy')}
         </p>
       </div>
     </div>
