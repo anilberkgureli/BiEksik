@@ -1,4 +1,5 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
+import { App as CapacitorApp } from '@capacitor/app';
 import { useTheme } from './src/application/contexts/ThemeContext';
 import { useLanguage } from './src/application/contexts/LanguageContext';
 import { useShoppingLists } from './hooks/useShoppingLists';
@@ -7,7 +8,7 @@ import { ListColor } from './src/shared/constants/colors';
 import Dashboard from './components/Dashboard';
 import ShoppingListView from './components/ShoppingListView';
 import { SplashScreen } from './components/SplashScreen';
-import { t } from './utils/i18n';
+import { translate } from './utils/i18n';
 
 const App: React.FC = () => {
   const { theme, toggleTheme } = useTheme();
@@ -59,6 +60,23 @@ const App: React.FC = () => {
     setActiveListId(list.id);
   }, []);
 
+  // Handle Android hardware back button
+  useEffect(() => {
+    const handleBackButton = CapacitorApp.addListener('backButton', ({ canGoBack }) => {
+      if (activeListId) {
+        // If viewing a list, go back to dashboard
+        setActiveListId(null);
+      } else {
+        // If on dashboard, exit app
+        CapacitorApp.exitApp();
+      }
+    });
+
+    return () => {
+      handleBackButton.remove();
+    };
+  }, [activeListId]);
+
   if (showSplash) {
     return <SplashScreen onFinish={handleSplashFinish} />;
   }
@@ -103,7 +121,7 @@ const App: React.FC = () => {
       {/* Majestic Footer */}
       <div className="py-4 bg-white/50 backdrop-blur-md border-t border-white/20 text-center shrink-0">
         <p className="text-[11px] font-serif tracking-[0.25em] text-slate-800 uppercase select-none font-bold">
-          {t('app.createdBy')}
+          {translate('app.createdBy')}
         </p>
       </div>
     </div>

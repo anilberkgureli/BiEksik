@@ -47,3 +47,4 @@ export const MultiSelectBar: React.FC<MultiSelectBarProps> = ({
         </div>
     );
 };
+

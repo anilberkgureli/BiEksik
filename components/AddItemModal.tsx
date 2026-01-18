@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Plus } from 'lucide-react';
 import { Modal, Button } from './ui';
-import { t } from '../utils/i18n';
+import { translate } from '../utils/i18n';
 
 interface AddItemModalProps {
   isOpen: boolean;
@@ -29,16 +29,16 @@ const AddItemModal: React.FC<AddItemModalProps> = ({ isOpen, onClose, onAdd }) =
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={t('addItem.title')}
+      title={translate('addItem.title')}
       size="md"
     >
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{t('addItem.itemName')}</label>
+          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{translate('addItem.itemName')}</label>
           <input
             autoFocus
             type="text"
-            placeholder={t('addItem.itemNamePlaceholder')}
+            placeholder={translate('addItem.itemNamePlaceholder')}
             className="w-full px-4 py-3 rounded-lg border border-slate-300/60 dark:border-slate-700/60 bg-white/60 dark:bg-slate-800/60 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition placeholder:text-slate-500"
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -47,10 +47,10 @@ const AddItemModal: React.FC<AddItemModalProps> = ({ isOpen, onClose, onAdd }) =
 
         <div className="flex gap-4">
           <div className="flex-1">
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{t('addItem.quantity')}</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{translate('addItem.quantity')}</label>
             <input
               type="text"
-              placeholder={t('addItem.quantityPlaceholder')}
+              placeholder={translate('addItem.quantityPlaceholder')}
               className="w-full px-4 py-3 rounded-lg border border-slate-300/60 dark:border-slate-700/60 bg-white/60 dark:bg-slate-800/60 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition placeholder:text-slate-500"
               value={quantity}
               onChange={(e) => setQuantity(e.target.value)}
@@ -59,10 +59,10 @@ const AddItemModal: React.FC<AddItemModalProps> = ({ isOpen, onClose, onAdd }) =
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{t('addItem.notes')}</label>
+          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{translate('addItem.notes')}</label>
           <textarea
             rows={2}
-            placeholder={t('addItem.notesPlaceholder')}
+            placeholder={translate('addItem.notesPlaceholder')}
             className="w-full px-4 py-3 rounded-lg border border-slate-300/60 dark:border-slate-700/60 bg-white/60 dark:bg-slate-800/60 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition resize-none placeholder:text-slate-500"
             value={note}
             onChange={(e) => setNote(e.target.value)}
@@ -77,7 +77,7 @@ const AddItemModal: React.FC<AddItemModalProps> = ({ isOpen, onClose, onAdd }) =
             fullWidth
             leftIcon={<Plus size={20} />}
           >
-            {t('addItem.addItem')}
+            {translate('addItem.addItem')}
           </Button>
         </div>
       </form>

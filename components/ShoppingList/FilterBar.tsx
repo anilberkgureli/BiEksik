@@ -1,7 +1,7 @@
 import React from 'react';
 import { SortAsc, Clock, LayoutGrid, List as ListIcon } from 'lucide-react';
 import { FilterChip } from '../ui';
-import { t } from '../../utils/i18n';
+import { translate } from '../../utils/i18n';
 import { Language } from '../../utils/i18n';
 import { config } from '../../config';
 
@@ -30,7 +30,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
         <div className="px-4 flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
             {config.features.enableCategorization && (
                 <FilterChip
-                    label={isGrouped ? t('shoppingList.grouped') : t('shoppingList.listView')}
+                    label={isGrouped ? translate('shoppingList.grouped') : translate('shoppingList.listView')}
                     isActive={isGrouped}
                     onClick={onGroupToggle}
                     icon={isGrouped ? <LayoutGrid size={14} /> : <ListIcon size={14} />}
@@ -45,7 +45,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
             />
 
             <FilterChip
-                label={t('shoppingList.newest')}
+                label={translate('shoppingList.newest')}
                 isActive={sortBy === 'addedAt'}
                 onClick={() => onSortChange('addedAt')}
                 icon={<Clock size={14} />}
@@ -53,3 +53,4 @@ export const FilterBar: React.FC<FilterBarProps> = ({
         </div>
     );
 };
+

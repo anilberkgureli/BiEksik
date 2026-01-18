@@ -38,7 +38,7 @@ export const getCurrentLanguage = (): Language => {
 };
 
 // Translation function that uses the current language
-export const t = (key: string, lang?: Language): string => {
+export const translate = (key: string, lang?: Language): string => {
     const keys = key.split('.');
     const languageToUse = lang || currentLanguage;
     let value: any = translations[languageToUse];

@@ -41,6 +41,7 @@
         "deleteList": "Liste Silinsin mi?",
         "deleteListWithItems": "Bu listede satın alınmamış ürünler var. Silmek istediğinizden emin misiniz?",
         "deleteListConfirm": "Bu listeyi silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.",
+        "deleteItemFromList": "Bu ürünü listeden silmek istediğinize emin misiniz?",
         "cancel": "İptal",
         "delete": "Sil"
     },
@@ -57,6 +58,11 @@
         "wontNotify": "Bildirim gönderilmeyecek",
         "setReminder": "Hatırlatıcı Ayarla",
         "at": "saat"
+    },
+    "theme": {
+        "title": "Tema",
+        "lightMode": "Açık Mod",
+        "darkMode": "Koyu Mod"
     },
     "common": {
         "loading": "Yükleniyor...",

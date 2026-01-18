@@ -51,3 +51,4 @@ export const FilterChip: React.FC<FilterChipProps> = ({
         </button>
     );
 };
+

@@ -2,7 +2,7 @@ import React from 'react';
 import { ShoppingItem } from '../../types';
 import { Check, Trash2 } from 'lucide-react';
 import { Language } from '../../utils/i18n';
-import { t } from '../../utils/i18n';
+import { translate } from '../../utils/i18n';
 
 interface CompletedItemsSectionProps {
     completedItems: ShoppingItem[];
@@ -43,7 +43,7 @@ export const CompletedItemsSection: React.FC<CompletedItemsSectionProps> = ({
             <div className="flex items-center gap-2 mb-3">
                 <span className="h-px flex-1 bg-slate-200 dark:bg-slate-700"></span>
                 <span className="text-xs font-medium text-slate-400 dark:text-slate-500 uppercase">
-                    {t('shoppingList.completed')} ({completedItems.length})
+                    {translate('shoppingList.completed')} ({completedItems.length})
                 </span>
                 <span className="h-px flex-1 bg-slate-200 dark:bg-slate-700"></span>
             </div>
@@ -118,3 +118,4 @@ export const CompletedItemsSection: React.FC<CompletedItemsSectionProps> = ({
         </div>
     );
 };
+

@@ -1,6 +1,6 @@
 import React from 'react';
 import { ArrowLeft, Share2, Trash2, Search, X } from 'lucide-react';
-import { t } from '../utils/i18n';
+import { translate } from '../utils/i18n';
 
 import { config } from '../config';
 
@@ -40,7 +40,7 @@ export const ShoppingListHeader: React.FC<ShoppingListHeaderProps> = ({ title, o
                 <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400" />
                 <input
                     type="text"
-                    placeholder={t('shoppingList.findItem')}
+                    placeholder={translate('shoppingList.findItem')}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="w-full pl-9 pr-4 py-2 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-white/20 dark:border-slate-700/30 rounded-lg text-sm text-slate-800 dark:text-white focus:bg-white/80 dark:focus:bg-slate-800/80 focus:ring-2 focus:ring-primary/20 outline-none transition-all placeholder:text-slate-500 dark:placeholder:text-slate-400"
@@ -54,3 +54,4 @@ export const ShoppingListHeader: React.FC<ShoppingListHeaderProps> = ({ title, o
         </div>
     </div>
 );
+

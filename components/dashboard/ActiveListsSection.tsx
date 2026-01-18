@@ -52,3 +52,4 @@ export const ActiveListsSection: React.FC<ActiveListsSectionProps> = ({
         </div>
     );
 };
+
