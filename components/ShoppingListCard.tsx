@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { ShoppingList } from '../types';
 import { ShoppingBag, Clock, ChevronRight, Trash2, Check, Bell } from 'lucide-react';
 import { useSwipe } from '../hooks/useSwipe';
-import { t } from '../utils/i18n';
+import { translate } from '../utils/i18n';
 import { ReminderModal } from './ReminderModal';
 import type { ReminderTime } from '../src/domain/entities/ReminderTime';
 
@@ -41,7 +41,7 @@ export const ShoppingListCard: React.FC<ShoppingListCardProps> = ({
     const progress = itemCount > 0 ? (completedCount / itemCount) * 100 : 0;
 
     return (
-        <div className="relative group rounded-2xl overflow-hidden touch-none" onClick={e => e.stopPropagation()}>
+        <div className="relative group rounded-2xl overflow-hidden">
             {/* Background Delete Action (Swipe) */}
             <div className={`absolute inset-0 flex justify-end transition-opacity duration-300 ${isSwiped ? 'opacity-100' : 'opacity-0'}`}>
                 <button
@@ -53,7 +53,7 @@ export const ShoppingListCard: React.FC<ShoppingListCardProps> = ({
                     }}
                 >
                     <Trash2 size={24} />
-                    <span className="text-xs font-bold mt-1">{t('dashboard.delete')}</span>
+                    <span className="text-xs font-bold mt-1">{translate('dashboard.delete')}</span>
                 </button>
             </div>
 
@@ -62,6 +62,7 @@ export const ShoppingListCard: React.FC<ShoppingListCardProps> = ({
                 {...handlers}
                 onPointerDown={(e) => handlers.onPointerDown(e, list.id)}
                 onPointerUp={(e) => handlers.onPointerUp(e, list.id)}
+                style={{ touchAction: 'pan-y' }}
                 onClick={(e) => {
                     if (isSwiped) resetSwipe();
                     else onSelect(list);
@@ -113,10 +114,10 @@ export const ShoppingListCard: React.FC<ShoppingListCardProps> = ({
                                     }}
                                     onPointerDown={(e) => e.stopPropagation()}
                                     className={`p-2 rounded-full transition-colors z-20 touch-manipulation cursor-pointer ${list.reminder?.enabled
-                                            ? 'text-indigo-500 bg-indigo-50 dark:bg-indigo-900/20'
-                                            : 'text-slate-300 hover:text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/20'
+                                        ? 'text-indigo-500 bg-indigo-50 dark:bg-indigo-900/20'
+                                        : 'text-slate-300 hover:text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/20'
                                         }`}
-                                    title={list.reminder ? `${t('reminder.at')} ${list.reminder.getFormattedTime()}` : t('reminder.setReminder')}
+                                    title={list.reminder ? `${translate('reminder.at')} ${list.reminder.getFormattedTime()}` : translate('reminder.setReminder')}
                                 >
                                     <Bell size={18} className="pointer-events-none" />
                                 </button>
@@ -139,7 +140,7 @@ export const ShoppingListCard: React.FC<ShoppingListCardProps> = ({
                 {/* Progress Bar */}
                 <div className="space-y-1 pointer-events-none">
                     <div className="flex justify-between text-xs font-medium">
-                        <span className="text-slate-500 dark:text-slate-400">{completedCount}/{itemCount} {t('dashboard.bought')}</span>
+                        <span className="text-slate-500 dark:text-slate-400">{completedCount}/{itemCount} {translate('dashboard.bought')}</span>
                         <span className="text-slate-400 dark:text-slate-600">{Math.round(progress)}%</span>
                     </div>
                     <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
@@ -162,3 +163,4 @@ export const ShoppingListCard: React.FC<ShoppingListCardProps> = ({
         </div>
     );
 };
+

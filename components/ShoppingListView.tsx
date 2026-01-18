@@ -2,13 +2,15 @@ import React, { useState, useMemo, useCallback } from 'react';
 import { ShoppingList } from '../src/domain/entities/ShoppingList';
 import { ShoppingItem } from '../src/domain/entities/ShoppingItem';
 import { DEFAULT_CATEGORY } from '../constants';
-import { Plus, Trash2 } from 'lucide-react';
+import { Plus, Trash2, TrendingDown } from 'lucide-react';
 import AddItemModal from './AddItemModal';
 import { ShoppingListHeader } from './ShoppingListHeader';
 import { FilterBar, ActiveItemsList, CompletedItemsSection } from './ShoppingList';
 import { Language } from '../utils/i18n';
-import { t } from '../utils/i18n';
+import { translate } from '../utils/i18n';
 import { config } from '../config';
+import { PriceComparisonModal } from './PriceComparison/PriceComparisonModal';
+import { usePriceComparison } from '../src/application/contexts/PriceComparisonContext';
 
 interface ShoppingListViewProps {
   list: ShoppingList;
@@ -23,6 +25,8 @@ type SortOption = 'addedAt' | 'name';
 const ShoppingListView: React.FC<ShoppingListViewProps> = ({ list, onBack, onUpdateList, onDeleteList, language = 'en' }) => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isDeletingList, setIsDeletingList] = useState(false);
+  const [isPriceModalOpen, setIsPriceModalOpen] = useState(false);
+  const { comparePrices } = usePriceComparison();
 
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<SortOption>('addedAt');
@@ -156,8 +160,13 @@ const ShoppingListView: React.FC<ShoppingListViewProps> = ({ list, onBack, onUpd
     setSelectedCompletedItems(new Set());
   }, [list, selectedCompletedItems, onUpdateList]);
 
+  const handleComparePrices = useCallback(async () => {
+    setIsPriceModalOpen(true);
+    await comparePrices(list);
+  }, [list, comparePrices]);
+
   return (
-    <div className="flex flex-col h-full bg-transparent">
+    <div className="flex flex-col h-full min-h-0 bg-transparent">
       <ShoppingListHeader
         title={list.title}
         onBack={onBack}
@@ -175,7 +184,19 @@ const ShoppingListView: React.FC<ShoppingListViewProps> = ({ list, onBack, onUpd
         language={language}
       />
 
-      <div className="flex-1 overflow-y-auto p-4 space-y-6">
+      {config.features.enablePriceComparison && list.items.length > 0 && (
+        <div className="px-4 pb-2">
+          <button
+            onClick={handleComparePrices}
+            className="w-full py-3 px-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-semibold rounded-xl shadow-lg shadow-green-500/30 hover:shadow-xl hover:shadow-green-500/40 transition-all flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98]"
+          >
+            <TrendingDown size={20} />
+            <span>{language === 'tr' ? 'Fiyatları Karşılaştır' : 'Compare Prices'}</span>
+          </button>
+        </div>
+      )}
+
+      <div className="flex-1 overflow-y-auto p-4 pb-20 space-y-6 min-h-0">
         <ActiveItemsList
           groupedItems={groupedItems}
           isGrouped={isGrouped}
@@ -220,6 +241,11 @@ const ShoppingListView: React.FC<ShoppingListViewProps> = ({ list, onBack, onUpd
         onAdd={handleAddItem}
       />
 
+      <PriceComparisonModal
+        isOpen={isPriceModalOpen}
+        onClose={() => setIsPriceModalOpen(false)}
+      />
+
       {isDeletingList && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in duration-200" onClick={() => setIsDeletingList(false)}>
           <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-2xl max-w-sm w-full border border-slate-100 dark:border-slate-800 scale-100" onClick={e => e.stopPropagation()}>
@@ -227,24 +253,24 @@ const ShoppingListView: React.FC<ShoppingListViewProps> = ({ list, onBack, onUpd
               <div className="w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 flex items-center justify-center mb-4">
                 <Trash2 size={24} />
               </div>
-              <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">{t('deleteConfirmation.deleteList')}</h3>
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">{translate('deleteConfirmation.deleteList')}</h3>
               <p className="text-slate-500 dark:text-slate-400 text-sm mb-6">
                 {list.items.some(i => !i.isCompleted)
-                  ? t('deleteConfirmation.deleteListWithItems')
-                  : t('deleteConfirmation.deleteListConfirm')}
+                  ? translate('deleteConfirmation.deleteListWithItems')
+                  : translate('deleteConfirmation.deleteListConfirm')}
               </p>
               <div className="flex gap-3 w-full">
                 <button
                   onClick={() => setIsDeletingList(false)}
                   className="flex-1 px-4 py-2.5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold rounded-xl hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
                 >
-                  {t('deleteConfirmation.cancel')}
+                  {translate('deleteConfirmation.cancel')}
                 </button>
                 <button
                   onClick={() => onDeleteList(list.id)}
                   className="flex-1 px-4 py-2.5 bg-red-500 text-white font-semibold rounded-xl hover:bg-red-600 transition-colors shadow-lg shadow-red-500/20"
                 >
-                  {t('deleteConfirmation.delete')}
+                  {translate('deleteConfirmation.delete')}
                 </button>
               </div>
             </div>

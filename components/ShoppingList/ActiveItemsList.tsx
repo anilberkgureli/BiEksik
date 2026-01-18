@@ -2,7 +2,7 @@ import React from 'react';
 import { ShoppingItem } from '../../types';
 import { ShoppingItemRow } from '../ShoppingItemRow';
 import { Language } from '../../utils/i18n';
-import { t } from '../../utils/i18n';
+import { translate } from '../../utils/i18n';
 
 interface ActiveItemsListProps {
     groupedItems: Record<string, ShoppingItem[]>;
@@ -28,7 +28,7 @@ export const ActiveItemsList: React.FC<ActiveItemsListProps> = ({
     if (isEmpty) {
         return (
             <div className="text-center py-10 text-slate-400 dark:text-slate-500">
-                <p className="text-lg mb-2">{t('shoppingList.listIsEmpty')}</p>
+                <p className="text-lg mb-2">{translate('shoppingList.listIsEmpty')}</p>
             </div>
         );
     }
@@ -62,3 +62,4 @@ export const ActiveItemsList: React.FC<ActiveItemsListProps> = ({
         </>
     );
 };
+

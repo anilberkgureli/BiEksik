@@ -45,3 +45,4 @@ export const SearchBar: React.FC<SearchBarProps> = ({
         </div>
     );
 };
+

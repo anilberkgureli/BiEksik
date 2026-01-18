@@ -7,7 +7,7 @@ import { CreateListForm } from './CreateListForm';
 import { DeleteConfirmationModal } from './DeleteConfirmationModal';
 import { Language } from '../utils/i18n';
 import { Trash2, X } from 'lucide-react';
-import { t } from '../utils/i18n';
+import { translate } from '../utils/i18n';
 import type { ReminderTime } from '../src/domain/entities/ReminderTime';
 
 interface DashboardProps {
@@ -65,8 +65,8 @@ const Dashboard: React.FC<DashboardProps> = ({
 
   const deleteMessage = useMemo(
     () => hasUncompletedItems
-      ? t('deleteConfirmation.deleteListWithItems')
-      : t('deleteConfirmation.deleteListConfirm'),
+      ? translate('deleteConfirmation.deleteListWithItems')
+      : translate('deleteConfirmation.deleteListConfirm'),
     [hasUncompletedItems]
   );
 

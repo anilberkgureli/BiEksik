@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Bell, BellOff, Trash2 } from 'lucide-react';
 import { ReminderTime } from '../src/domain/entities/ReminderTime';
-import { t } from '../utils/i18n';
+import { translate } from '../utils/i18n';
 
 interface ReminderModalProps {
     isOpen: boolean;
@@ -92,7 +92,7 @@ export const ReminderModal: React.FC<ReminderModalProps> = ({
                         </div>
                         <div>
                             <h2 className="text-xl font-bold text-slate-900 dark:text-white">
-                                {currentReminder ? t('reminder.edit') : t('reminder.add')}
+                                {currentReminder ? translate('reminder.edit') : translate('reminder.add')}
                             </h2>
                             <p className="text-sm text-slate-500 dark:text-slate-400">{listTitle}</p>
                         </div>
@@ -108,13 +108,13 @@ export const ReminderModal: React.FC<ReminderModalProps> = ({
                 {/* Date Time Picker */}
                 <div className="mb-6 space-y-4">
                     <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-3">
-                        {t('reminder.dateTime')}
+                        {translate('reminder.dateTime')}
                     </label>
 
                     {/* Date Picker */}
                     <div>
                         <label className="block text-xs text-slate-500 dark:text-slate-400 mb-2">
-                            {t('reminder.date')}
+                            {translate('reminder.date')}
                         </label>
                         <input
                             type="date"
@@ -131,7 +131,7 @@ export const ReminderModal: React.FC<ReminderModalProps> = ({
                     {/* Time Picker - 24 hour format */}
                     <div>
                         <label className="block text-xs text-slate-500 dark:text-slate-400 mb-2">
-                            {t('reminder.time')}
+                            {translate('reminder.time')}
                         </label>
                         <div className="flex items-center gap-3">
                             <select
@@ -169,7 +169,7 @@ export const ReminderModal: React.FC<ReminderModalProps> = ({
                     </div>
 
                     <p className="text-xs text-slate-500 dark:text-slate-400">
-                        {t('reminder.selectFutureTime')}
+                        {translate('reminder.selectFutureTime')}
                     </p>
                 </div>
 
@@ -184,10 +184,10 @@ export const ReminderModal: React.FC<ReminderModalProps> = ({
                             )}
                             <div>
                                 <p className="font-medium text-slate-900 dark:text-white">
-                                    {enabled ? t('reminder.enabled') : t('reminder.disabled')}
+                                    {enabled ? translate('reminder.enabled') : translate('reminder.disabled')}
                                 </p>
                                 <p className="text-sm text-slate-500 dark:text-slate-400">
-                                    {enabled ? t('reminder.willNotify') : t('reminder.wontNotify')}
+                                    {enabled ? translate('reminder.willNotify') : translate('reminder.wontNotify')}
                                 </p>
                             </div>
                         </div>
@@ -212,23 +212,24 @@ export const ReminderModal: React.FC<ReminderModalProps> = ({
                             className="flex-1 px-4 py-3 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-xl font-medium hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors flex items-center justify-center gap-2"
                         >
                             <Trash2 className="w-4 h-4" />
-                            {t('common.delete')}
+                            {translate('common.delete')}
                         </button>
                     )}
                     <button
                         onClick={onClose}
                         className="flex-1 px-4 py-3 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl font-medium hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors"
                     >
-                        {t('common.cancel')}
+                        {translate('common.cancel')}
                     </button>
                     <button
                         onClick={handleSave}
                         className="flex-1 px-4 py-3 bg-indigo-600 text-white rounded-xl font-medium hover:bg-indigo-700 transition-colors"
                     >
-                        {t('common.save')}
+                        {translate('common.save')}
                     </button>
                 </div>
             </div>
         </div>
     );
 };
+

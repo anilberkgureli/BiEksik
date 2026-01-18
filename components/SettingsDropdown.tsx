@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Settings, Moon, Sun, Globe, Trash2 } from 'lucide-react';
-import { Language } from '../utils/i18n';
+import { Language, translate } from '../utils/i18n';
 import { LanguageSelectionModal } from './LanguageSelectionModal';
 import { config } from '../config';
 
@@ -118,12 +118,12 @@ export const SettingsDropdown: React.FC<SettingsDropdownProps> = ({
                                 )}
                                 <div className="flex-1 text-left">
                                     <p className="text-sm font-medium text-slate-700 dark:text-slate-200">
-                                        {language === 'tr' ? 'Tema' : 'Theme'}
+                                        {translate('theme.title', language)}
                                     </p>
                                     <p className="text-xs text-slate-500 dark:text-slate-400">
                                         {theme === 'light'
-                                            ? (language === 'tr' ? 'Açık Mod' : 'Light Mode')
-                                            : (language === 'tr' ? 'Koyu Mod' : 'Dark Mode')
+                                            ? translate('theme.lightMode', language)
+                                            : translate('theme.darkMode', language)
                                         }
                                     </p>
                                 </div>
@@ -143,3 +143,4 @@ export const SettingsDropdown: React.FC<SettingsDropdownProps> = ({
         </>
     );
 };
+

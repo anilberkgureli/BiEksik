@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { t } from '../utils/i18n';
+import { translate } from '../utils/i18n';
 
 export const SplashScreen: React.FC<{ onFinish: () => void }> = ({ onFinish }) => {
     const [visible, setVisible] = useState(true);
@@ -20,10 +20,11 @@ export const SplashScreen: React.FC<{ onFinish: () => void }> = ({ onFinish }) =
                 <div className="w-24 h-24 rounded-2xl shadow-lg overflow-hidden flex items-center justify-center bg-white animate-bounce">
                     <img src="/logo.png" alt="App Logo" className="w-full h-full object-cover scale-110" />
                 </div>
-                <h1 className="text-xl font-serif tracking-[0.3em] text-slate-800 uppercase select-none font-bold animate-pulse">
-                    {t('app.createdBy')}
+                <h1 className="text-sm font-serif tracking-[0.15em] text-slate-800 select-none animate-pulse">
+                    {translate('app.tagline')}
                 </h1>
             </div>
         </div>
     );
 };
+

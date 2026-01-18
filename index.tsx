@@ -5,6 +5,7 @@ import { RepositoryProvider } from './src/application/contexts/RepositoryContext
 import { ThemeProvider } from './src/application/contexts/ThemeContext';
 import { LanguageProvider } from './src/application/contexts/LanguageContext';
 import { ToastProvider } from './src/application/contexts/ToastContext';
+import { PriceComparisonProvider } from './src/application/contexts/PriceComparisonContext';
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {
@@ -18,7 +19,9 @@ root.render(
       <RepositoryProvider>
         <ThemeProvider>
           <LanguageProvider>
-            <App />
+            <PriceComparisonProvider>
+              <App />
+            </PriceComparisonProvider>
           </LanguageProvider>
         </ThemeProvider>
       </RepositoryProvider>

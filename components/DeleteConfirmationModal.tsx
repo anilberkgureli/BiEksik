@@ -1,7 +1,7 @@
 import React from 'react';
 import { Trash2 } from 'lucide-react';
 import { Modal, Button } from './ui';
-import { t } from '../utils/i18n';
+import { translate } from '../utils/i18n';
 
 export interface DeleteConfirmationModalProps {
     /**
@@ -38,7 +38,7 @@ export const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = (
     isOpen,
     onClose,
     onConfirm,
-    title = t('deleteConfirmation.deleteList'),
+    title = translate('deleteConfirmation.deleteList'),
     message,
 }) => {
     const handleConfirm = () => {
@@ -67,17 +67,18 @@ export const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = (
                         variant="secondary"
                         fullWidth
                     >
-                        {t('deleteConfirmation.cancel')}
+                        {translate('deleteConfirmation.cancel')}
                     </Button>
                     <Button
                         onClick={handleConfirm}
                         variant="danger"
                         fullWidth
                     >
-                        {t('deleteConfirmation.delete')}
+                        {translate('deleteConfirmation.delete')}
                     </Button>
                 </div>
             </div>
         </Modal>
     );
 };
+

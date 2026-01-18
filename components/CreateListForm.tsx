@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { COLORS, type ListColor } from '../constants';
 import { Plus } from 'lucide-react';
 import { Button } from './ui';
-import { t } from '../utils/i18n';
+import { translate } from '../utils/i18n';
 
 interface CreateListFormProps {
     onCreate: (title: string, color: ListColor) => void;
@@ -26,17 +26,17 @@ export const CreateListForm: React.FC<CreateListFormProps> = ({ onCreate }) => {
         return (
             <div className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm rounded-2xl p-5 shadow-lg border-2 border-primary animate-in fade-in zoom-in duration-200" onClick={e => e.stopPropagation()}>
                 <form onSubmit={handleCreate}>
-                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{t('dashboard.newListName')}</label>
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{translate('dashboard.newListName')}</label>
                     <input
                         autoFocus
                         type="text"
-                        placeholder={t('dashboard.newListPlaceholder')}
+                        placeholder={translate('dashboard.newListPlaceholder')}
                         className="w-full text-lg font-medium bg-transparent border-b-2 border-slate-200 dark:border-slate-700 focus:border-primary outline-none px-0 py-2 mb-4 transition-colors text-slate-900 dark:text-white placeholder:text-slate-400"
                         value={newTitle}
                         onChange={(e) => setNewTitle(e.target.value)}
                     />
                     <div className="mb-6">
-                        <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-2">{t('dashboard.colorCode')}</label>
+                        <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-2">{translate('dashboard.colorCode')}</label>
                         <div className="flex gap-2 overflow-x-auto p-2">
                             {COLORS.map(c => (
                                 <button
@@ -55,14 +55,14 @@ export const CreateListForm: React.FC<CreateListFormProps> = ({ onCreate }) => {
                             onClick={() => setIsCreating(false)}
                             variant="ghost"
                         >
-                            {t('dashboard.cancel')}
+                            {translate('dashboard.cancel')}
                         </Button>
                         <Button
                             type="submit"
                             disabled={!newTitle.trim()}
                             variant="primary"
                         >
-                            {t('dashboard.createList')}
+                            {translate('dashboard.createList')}
                         </Button>
                     </div>
                 </form>
@@ -75,8 +75,9 @@ export const CreateListForm: React.FC<CreateListFormProps> = ({ onCreate }) => {
             <div className="w-10 h-10 rounded-full bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm mb-2 group-hover:scale-110 transition-transform">
                 <Plus size={24} />
             </div>
-            <span className="font-medium">{t('dashboard.createNewList')}</span>
+            <span className="font-medium">{translate('dashboard.createNewList')}</span>
         </button>
     );
 };
+
 

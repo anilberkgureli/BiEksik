@@ -70,3 +70,4 @@ export const CompletedListsSection: React.FC<CompletedListsSectionProps> = ({
         </>
     );
 };
+

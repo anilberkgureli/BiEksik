@@ -22,6 +22,18 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    // Rename APK output file
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            def buildType = variant.buildType.name
+            if (buildType == "release") {
+                outputFileName = "BiEksik.apk"
+            } else {
+                outputFileName = "BiEksik-${buildType}.apk"
+            }
+        }
+    }
 }
 
 repositories {
