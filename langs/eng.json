@@ -1,7 +1,7 @@
 {
     "app": {
         "name": "Bi Eksik?",
-        "tagline": "Manage your grocery runs intelligently.",
+        "tagline": "Manage your grocery lists intelligently.",
         "createdBy": "Developed by Anıl Güreli"
     },
     "dashboard": {
@@ -24,7 +24,19 @@
         "autoCategorize": "Auto-Categorize",
         "organizing": "Organizing...",
         "completed": "Completed",
-        "sharingLinkCopied": "Sharing link copied!"
+        "sharingLinkCopied": "Sharing link copied!",
+        "totalCost": "Total Cost",
+        "remainingCost": "Remaining",
+        "spentCost": "Spent",
+        "itemsWithPrice": "{priced} / {total} items priced"
+    },
+    "share": {
+        "title": "Share List",
+        "description": "Share your shopping list",
+        "share": "Share",
+        "copy": "Copy as Text",
+        "copied": "List copied to clipboard!",
+        "shareNotSupported": "Sharing is not supported on this device"
     },
     "addItem": {
         "title": "Add Item",
@@ -32,10 +44,16 @@
         "itemNamePlaceholder": "e.g. Milk",
         "quantity": "Quantity",
         "quantityPlaceholder": "e.g. 2L",
-        "notes": "Notes (Optional)",
-        "notesPlaceholder": "Any specific brand or details",
+        "price": "Price (₺)",
+        "pricePlaceholder": "0.00",
+        "notes": "Notes",
+        "notesPlaceholder": "Additional info (optional)",
         "cancel": "Cancel",
         "addItem": "Add Item"
+    },
+    "editItem": {
+        "title": "Edit Item",
+        "save": "Save"
     },
     "deleteConfirmation": {
         "deleteList": "Delete List?",

@@ -147,6 +147,28 @@ export const ShoppingListCard: React.FC<ShoppingListCardProps> = ({
                         <div className="h-full rounded-full transition-all duration-500" style={{ width: `${progress}%`, backgroundColor: list.color }}></div>
                     </div>
                 </div>
+
+                {/* Total Cost */}
+                {(() => {
+                    const itemsWithPrice = list.items.filter(item => item.price !== undefined && item.price > 0);
+                    const totalCost = itemsWithPrice.reduce((sum, item) => sum + (item.price || 0), 0);
+
+                    if (itemsWithPrice.length > 0) {
+                        return (
+                            <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-800 pointer-events-none">
+                                <div className="flex items-center justify-between text-sm">
+                                    <span className="text-slate-500 dark:text-slate-400 font-medium">
+                                        {translate('shoppingList.totalCost')}
+                                    </span>
+                                    <span className="text-green-600 dark:text-green-500 font-bold">
+                                        ₺{totalCost.toFixed(2)}
+                                    </span>
+                                </div>
+                            </div>
+                        );
+                    }
+                    return null;
+                })()}
             </div>
 
             {/* Reminder Modal */}

@@ -4,13 +4,15 @@ import { ShoppingItem } from '../src/domain/entities/ShoppingItem';
 import { DEFAULT_CATEGORY } from '../constants';
 import { Plus, Trash2, TrendingDown } from 'lucide-react';
 import AddItemModal from './AddItemModal';
+import EditItemModal from './EditItemModal';
 import { ShoppingListHeader } from './ShoppingListHeader';
-import { FilterBar, ActiveItemsList, CompletedItemsSection } from './ShoppingList';
+import { FilterBar, ActiveItemsList, CompletedItemsSection, TotalCostSummary } from './ShoppingList';
 import { Language } from '../utils/i18n';
 import { translate } from '../utils/i18n';
 import { config } from '../config';
 import { PriceComparisonModal } from './PriceComparison/PriceComparisonModal';
 import { usePriceComparison } from '../src/application/contexts/PriceComparisonContext';
+import { ShareModal } from './ShareModal';
 
 interface ShoppingListViewProps {
   list: ShoppingList;
@@ -24,8 +26,11 @@ type SortOption = 'addedAt' | 'name';
 
 const ShoppingListView: React.FC<ShoppingListViewProps> = ({ list, onBack, onUpdateList, onDeleteList, language = 'en' }) => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingItem, setEditingItem] = useState<ShoppingItem | null>(null);
   const [isDeletingList, setIsDeletingList] = useState(false);
   const [isPriceModalOpen, setIsPriceModalOpen] = useState(false);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const { comparePrices } = usePriceComparison();
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -33,21 +38,77 @@ const ShoppingListView: React.FC<ShoppingListViewProps> = ({ list, onBack, onUpd
   const [isGrouped, setIsGrouped] = useState(config.features.enableCategorization);
   const [selectedCompletedItems, setSelectedCompletedItems] = useState<Set<string>>(new Set());
 
-  const handleAddItem = useCallback(async (name: string, quantity: string, note: string) => {
-    const newItem = new ShoppingItem(
-      crypto.randomUUID(),
-      name,
-      quantity,
-      note,
-      false,
-      DEFAULT_CATEGORY,
-      Date.now()
+  const handleAddItem = useCallback(async (name: string, quantity: string, note: string, price?: number) => {
+    // Check if item with same name exists (and no note on either)
+    const existingItemIndex = list.items.findIndex(
+      item => item.name.toLowerCase().trim() === name.toLowerCase().trim() &&
+        !item.note &&
+        !note &&
+        !item.isCompleted // Only match active items
     );
-    // Create new ShoppingList instance instead of plain object
+
+    let updatedItems;
+    if (existingItemIndex !== -1) {
+      // Item exists - increment quantity and calculate price intelligently
+      const existingItem = list.items[existingItemIndex];
+      const currentQty = parseInt(existingItem.quantity) || 1;
+      const addedQty = parseInt(quantity) || 1;
+      const newQty = currentQty + addedQty;
+
+      // Calculate new price intelligently
+      const existingPrice = existingItem.price || 0;
+      let totalPrice: number | undefined;
+
+      if (existingPrice > 0) {
+        // Calculate unit price from existing item
+        const unitPrice = existingPrice / currentQty;
+
+        if (price !== undefined && price > 0) {
+          // New price given - add it to existing total
+          totalPrice = existingPrice + price;
+        } else {
+          // No new price - calculate based on unit price
+          totalPrice = unitPrice * newQty;
+        }
+      } else if (price !== undefined && price > 0) {
+        // No existing price, but new price given
+        totalPrice = price;
+      }
+
+      updatedItems = list.items.map((item, index) => {
+        if (index === existingItemIndex) {
+          return new ShoppingItem(
+            item.id,
+            item.name,
+            newQty.toString(),
+            item.note,
+            item.isCompleted,
+            item.category,
+            item.addedAt,
+            totalPrice
+          );
+        }
+        return item;
+      });
+    } else {
+      // New item - add to list
+      const newItem = new ShoppingItem(
+        crypto.randomUUID(),
+        name,
+        quantity,
+        note,
+        false,
+        DEFAULT_CATEGORY,
+        Date.now(),
+        price
+      );
+      updatedItems = [...list.items, newItem];
+    }
+
     const updatedList = new ShoppingList(
       list.id,
       list.title,
-      [...list.items, newItem],
+      updatedItems,
       list.createdAt,
       Date.now(),
       list.color
@@ -65,7 +126,8 @@ const ShoppingListView: React.FC<ShoppingListViewProps> = ({ list, onBack, onUpd
           item.note,
           !item.isCompleted,
           item.category,
-          item.addedAt
+          item.addedAt,
+          item.price // Preserve price when toggling
         );
       }
       return item;
@@ -93,6 +155,45 @@ const ShoppingListView: React.FC<ShoppingListViewProps> = ({ list, onBack, onUpd
     );
     onUpdateList(updatedList);
   }, [list, onUpdateList]);
+
+  const handleEditItem = useCallback((itemId: string) => {
+    const item = list.items.find(i => i.id === itemId);
+    if (item) {
+      setEditingItem(item);
+      setIsEditModalOpen(true);
+    }
+  }, [list.items]);
+
+  const handleSaveEdit = useCallback((name: string, quantity: string, note: string, price?: number) => {
+    if (!editingItem) return;
+
+    const updatedItems = list.items.map(item => {
+      if (item.id === editingItem.id) {
+        return new ShoppingItem(
+          item.id,
+          name,
+          quantity,
+          note,
+          item.isCompleted,
+          item.category,
+          item.addedAt,
+          price
+        );
+      }
+      return item;
+    });
+
+    const updatedList = new ShoppingList(
+      list.id,
+      list.title,
+      updatedItems,
+      list.createdAt,
+      Date.now(),
+      list.color
+    );
+    onUpdateList(updatedList);
+    setEditingItem(null);
+  }, [list, editingItem, onUpdateList]);
 
   // Logic: Filtering, Sorting, Grouping
   const groupedItems = useMemo<Record<string, ShoppingItem[]>>(() => {
@@ -160,6 +261,34 @@ const ShoppingListView: React.FC<ShoppingListViewProps> = ({ list, onBack, onUpd
     setSelectedCompletedItems(new Set());
   }, [list, selectedCompletedItems, onUpdateList]);
 
+  const handleUnmarkSelectedCompleted = useCallback(() => {
+    const updatedItems = list.items.map(item => {
+      if (selectedCompletedItems.has(item.id)) {
+        return new ShoppingItem(
+          item.id,
+          item.name,
+          item.quantity,
+          item.note,
+          false, // Mark as uncompleted
+          item.category,
+          item.addedAt,
+          item.price // Preserve price
+        );
+      }
+      return item;
+    });
+    const updatedList = new ShoppingList(
+      list.id,
+      list.title,
+      updatedItems,
+      list.createdAt,
+      Date.now(),
+      list.color
+    );
+    onUpdateList(updatedList);
+    setSelectedCompletedItems(new Set());
+  }, [list, selectedCompletedItems, onUpdateList]);
+
   const handleComparePrices = useCallback(async () => {
     setIsPriceModalOpen(true);
     await comparePrices(list);
@@ -170,7 +299,7 @@ const ShoppingListView: React.FC<ShoppingListViewProps> = ({ list, onBack, onUpd
       <ShoppingListHeader
         title={list.title}
         onBack={onBack}
-        onShare={() => alert("Sharing link copied!")}
+        onShare={() => setIsShareModalOpen(true)}
         onDeleteList={() => setIsDeletingList(true)}
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
@@ -200,9 +329,10 @@ const ShoppingListView: React.FC<ShoppingListViewProps> = ({ list, onBack, onUpd
         <ActiveItemsList
           groupedItems={groupedItems}
           isGrouped={isGrouped}
-          isEmpty={list.items.length === 0}
+          isEmpty={Object.values(groupedItems).flat().length === 0}
           onToggleItem={toggleItem}
           onDeleteItem={deleteItem}
+          onEditItem={handleEditItem}
           language={language}
         />
 
@@ -215,8 +345,11 @@ const ShoppingListView: React.FC<ShoppingListViewProps> = ({ list, onBack, onUpd
           onDeselectAll={handleDeselectAllCompleted}
           onToggleSelection={handleToggleCompletedItem}
           onDeleteSelected={handleDeleteSelectedCompleted}
+          onUnmarkSelected={handleUnmarkSelectedCompleted}
           language={language}
         />
+
+        <TotalCostSummary items={list.items} language={language} />
       </div>
 
       <div className="absolute bottom-6 right-6 z-20">
@@ -241,9 +374,25 @@ const ShoppingListView: React.FC<ShoppingListViewProps> = ({ list, onBack, onUpd
         onAdd={handleAddItem}
       />
 
+      <EditItemModal
+        isOpen={isEditModalOpen}
+        onClose={() => {
+          setIsEditModalOpen(false);
+          setEditingItem(null);
+        }}
+        onSave={handleSaveEdit}
+        item={editingItem}
+      />
+
       <PriceComparisonModal
         isOpen={isPriceModalOpen}
         onClose={() => setIsPriceModalOpen(false)}
+      />
+
+      <ShareModal
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
+        list={list}
       />
 
       {isDeletingList && (

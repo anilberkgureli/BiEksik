@@ -6,3 +6,4 @@
 export { FilterBar } from './FilterBar';
 export { ActiveItemsList } from './ActiveItemsList';
 export { CompletedItemsSection } from './CompletedItemsSection';
+export { TotalCostSummary } from './TotalCostSummary';

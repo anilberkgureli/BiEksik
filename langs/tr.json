@@ -24,18 +24,35 @@
         "autoCategorize": "Otomatik Kategorize Et",
         "organizing": "Düzenleniyor...",
         "completed": "Tamamlandı",
-        "sharingLinkCopied": "Paylaşım linki kopyalandı!"
+        "sharingLinkCopied": "Paylaşım linki kopyalandı!",
+        "totalCost": "Toplam Tutar",
+        "remainingCost": "Kalan Tutar",
+        "spentCost": "Harcanan",
+        "itemsWithPrice": "{priced} / {total} ürünün fiyatı girildi"
+    },
+    "share": {
+        "title": "Listeyi Paylaş",
+        "description": "Alışveriş listenizi paylaşın",
+        "share": "Paylaş",
+        "copy": "Metin Olarak Kopyala",
+        "copied": "Liste panoya kopyalandı!",
+        "shareNotSupported": "Paylaşım bu cihazda desteklenmiyor"
     },
     "addItem": {
         "title": "Ürün Ekle",
         "itemName": "Ürün Adı",
-        "itemNamePlaceholder": "örn. Süt",
+        "itemNamePlaceholder": "Örn: Süt",
         "quantity": "Miktar",
-        "quantityPlaceholder": "örn. 2L",
-        "notes": "Notlar (İsteğe Bağlı)",
-        "notesPlaceholder": "Özel bir marka veya detay",
-        "cancel": "İptal",
+        "quantityPlaceholder": "Örn: 2L",
+        "price": "Fiyat (₺)",
+        "pricePlaceholder": "0.00",
+        "notes": "Notlar",
+        "notesPlaceholder": "Ek bilgiler (isteğe bağlı)",
         "addItem": "Ürün Ekle"
+    },
+    "editItem": {
+        "title": "Ürünü Düzenle",
+        "save": "Kaydet"
     },
     "deleteConfirmation": {
         "deleteList": "Liste Silinsin mi?",

@@ -8,6 +8,7 @@ interface ShoppingItemRowProps {
     item: ShoppingItem;
     onToggle: (id: string) => void;
     onDelete: (id: string) => void;
+    onEdit: (id: string) => void;
     language?: Language;
 }
 
@@ -15,6 +16,7 @@ export const ShoppingItemRow: React.FC<ShoppingItemRowProps> = ({
     item,
     onToggle,
     onDelete,
+    onEdit,
     language = 'en'
 }) => {
     // Swipe hook'u - sola kaydırma için
@@ -37,6 +39,12 @@ export const ShoppingItemRow: React.FC<ShoppingItemRowProps> = ({
     const handleToggle = (e: React.MouseEvent) => {
         e.stopPropagation();
         onToggle(item.id);
+    };
+
+    // Edit fonksiyonu
+    const handleEdit = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        onEdit(item.id);
     };
 
     return (
@@ -87,16 +95,21 @@ export const ShoppingItemRow: React.FC<ShoppingItemRowProps> = ({
                     />
                 </button>
 
-                {/* Ürün bilgileri - İsim, miktar, not */}
-                <div className="flex-1 ml-3 min-w-0" onClick={handleToggle}>
+                {/* Ürün bilgileri - İsim, miktar, not - Tıklanabilir */}
+                <div className="flex-1 ml-3 min-w-0 cursor-pointer" onClick={handleEdit}>
                     <p className={`text-slate-800 dark:text-slate-200 font-medium truncate ${item.isCompleted ? 'line-through opacity-50' : ''}`}>
                         {item.name}
                     </p>
-                    {(item.quantity || item.note) && (
+                    {(item.quantity || item.note || item.price) && (
                         <div className="flex flex-wrap gap-2 text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                             {item.quantity && (
                                 <span className="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-slate-600 dark:text-slate-300">
                                     {item.quantity}
+                                </span>
+                            )}
+                            {item.price && (
+                                <span className="bg-green-50 dark:bg-green-900/20 px-1.5 py-0.5 rounded text-green-700 dark:text-green-400 font-semibold">
+                                    ₺{item.price.toFixed(2)}
                                 </span>
                             )}
                             {item.note && (

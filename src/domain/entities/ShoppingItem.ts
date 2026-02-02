@@ -12,7 +12,8 @@ export class ShoppingItem {
         public note: string | undefined,
         public isCompleted: boolean,
         public category: Category,
-        public readonly addedAt: number
+        public readonly addedAt: number,
+        public price?: number
     ) { }
 
     /**
@@ -76,6 +77,7 @@ export class ShoppingItem {
             isCompleted: this.isCompleted,
             category: this.category,
             addedAt: this.addedAt,
+            price: this.price
         };
     }
 
@@ -90,7 +92,8 @@ export class ShoppingItem {
             plain.note,
             plain.isCompleted,
             plain.category,
-            plain.addedAt
+            plain.addedAt,
+            plain.price
         );
     }
 }
@@ -106,4 +109,5 @@ export interface PlainShoppingItem {
     isCompleted: boolean;
     category: Category;
     addedAt: number;
+    price?: number;
 }

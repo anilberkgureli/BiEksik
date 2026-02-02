@@ -1,6 +1,6 @@
 import React from 'react';
 import { ShoppingItem } from '../../types';
-import { Check, Trash2 } from 'lucide-react';
+import { Check, Trash2, RotateCcw } from 'lucide-react';
 import { Language } from '../../utils/i18n';
 import { translate } from '../../utils/i18n';
 
@@ -13,6 +13,7 @@ interface CompletedItemsSectionProps {
     onDeselectAll: () => void;
     onToggleSelection: (itemId: string) => void;
     onDeleteSelected: () => void;
+    onUnmarkSelected: () => void;
     language?: Language;
 }
 
@@ -29,6 +30,7 @@ export const CompletedItemsSection: React.FC<CompletedItemsSectionProps> = ({
     onDeselectAll,
     onToggleSelection,
     onDeleteSelected,
+    onUnmarkSelected,
     language = 'en',
 }) => {
     if (completedItems.length === 0) {
@@ -61,16 +63,28 @@ export const CompletedItemsSection: React.FC<CompletedItemsSectionProps> = ({
                 </button>
 
                 {selectedItems.size > 0 && (
-                    <button
-                        onClick={onDeleteSelected}
-                        className="text-xs font-medium text-red-600 dark:text-red-400 hover:underline flex items-center gap-1"
-                    >
-                        <Trash2 size={12} />
-                        {language === 'tr'
-                            ? `Seçilenleri Sil (${selectedItems.size})`
-                            : `Delete Selected (${selectedItems.size})`
-                        }
-                    </button>
+                    <div className="flex items-center gap-3">
+                        <button
+                            onClick={onUnmarkSelected}
+                            className="text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1"
+                        >
+                            <RotateCcw size={12} />
+                            {language === 'tr'
+                                ? `Tamamlanmadı Olarak İşaretle (${selectedItems.size})`
+                                : `Mark as Uncompleted (${selectedItems.size})`
+                            }
+                        </button>
+                        <button
+                            onClick={onDeleteSelected}
+                            className="text-xs font-medium text-red-600 dark:text-red-400 hover:underline flex items-center gap-1"
+                        >
+                            <Trash2 size={12} />
+                            {language === 'tr'
+                                ? `Seçilenleri Sil (${selectedItems.size})`
+                                : `Delete Selected (${selectedItems.size})`
+                            }
+                        </button>
+                    </div>
                 )}
             </div>
 
@@ -85,8 +99,8 @@ export const CompletedItemsSection: React.FC<CompletedItemsSectionProps> = ({
                         <button
                             onClick={() => onToggleSelection(item.id)}
                             className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all mr-3 flex-shrink-0 ${selectedItems.has(item.id)
-                                    ? 'bg-indigo-500 border-indigo-500 text-white'
-                                    : 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700'
+                                ? 'bg-indigo-500 border-indigo-500 text-white'
+                                : 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700'
                                 }`}
                         >
                             {selectedItems.has(item.id) && <Check size={12} />}

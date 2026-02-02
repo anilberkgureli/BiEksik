@@ -10,6 +10,7 @@ interface ActiveItemsListProps {
     isEmpty: boolean;
     onToggleItem: (itemId: string) => void;
     onDeleteItem: (itemId: string) => void;
+    onEditItem: (itemId: string) => void;
     language?: Language;
 }
 
@@ -23,6 +24,7 @@ export const ActiveItemsList: React.FC<ActiveItemsListProps> = ({
     isEmpty,
     onToggleItem,
     onDeleteItem,
+    onEditItem,
     language = 'en',
 }) => {
     if (isEmpty) {
@@ -52,6 +54,7 @@ export const ActiveItemsList: React.FC<ActiveItemsListProps> = ({
                                     item={item}
                                     onToggle={onToggleItem}
                                     onDelete={onDeleteItem}
+                                    onEdit={onEditItem}
                                     language={language}
                                 />
                             ))}
