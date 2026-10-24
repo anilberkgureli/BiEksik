@@ -45,8 +45,7 @@ Bu uygulama **Progressive Web App (PWA)** olarak geliştirilmiş ve **Capacitor*
 
 1. Install dependencies:
    `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
+2. Run the app:
    `npm run dev`
 
 ## Android Build
@@ -103,59 +102,5 @@ Android cihazlar çok farklı ekran yoğunluklarına sahiptir. Sistem, cihazın 
 ✅ **APK Boyutu**: Android, hedef cihaza göre sadece gerekli kaynakları indirir (App Bundle kullanıldığında)
 
 > **Not**: Capacitor ile çalışırken bu klasörler otomatik olarak oluşturulur. Özel launcher icon veya splash screen eklemiyorsanız, genellikle bu klasörlere manuel müdahale gerekmez.
-
-## Git ve GitHub Kullanımı
-
-### İlk Kurulum (Sadece Bir Kez)
-
-1. **Git repository'sini başlat**:
-   ```bash
-   git init
-   ```
-
-2. **Git kullanıcı bilgilerini ayarla**:
-   ```bash
-   git config user.email "your-email@example.com"
-   git config user.name "your-username"
-   ```
-
-3. **Dosyaları ekle ve commit yap**:
-   ```bash
-   git add .
-   git commit -m "initial commit"
-   ```
-
-4. **GitHub'da yeni repository oluştur**:
-   - https://github.com/new adresine git
-   - Repository adını gir
-   - Public/Private seç
-   - README, .gitignore ekleme (zaten var)
-   - "Create repository" butonuna tıkla
-
-5. **Remote repository'yi ekle ve push yap**:
-   ```bash
-   git remote add origin https://github.com/kullanici-adiniz/repo-adi.git
-   git branch -M main
-   git push -u origin main
-   ```
-
-### Günlük Kullanım
-
-**Değişiklikleri commit et**:
-```bash
-git add .
-git commit -m "açıklayıcı commit mesajı"
-git push
-```
-
-**Değişiklikleri çek**:
-```bash
-git pull
-```
-
-**Durum kontrol et**:
-```bash
-git status
-```
 
 **Repository Linki**: [https://github.com/anilberkgureli/BiEksik](https://github.com/anilberkgureli/BiEksik)
